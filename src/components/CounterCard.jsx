@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCounterDetails } from "../slices/counterSlice";
 
 const CounterCard = () => {
   const [counters, setCounters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchCounters = async () => {
@@ -36,8 +39,9 @@ const CounterCard = () => {
     return <div>Error: {error}</div>;
   }
 
-  const handleCounterClick = (counterId) => {
-    navigate(`/dishes/${counterId}`);
+  const handleCounterClick = (counter) => {
+    dispatch(setCounterDetails(counter));
+    navigate(`/dishes/${counter._id}`);
   };
   return (
     <div className="container mx-auto p-4">
@@ -48,7 +52,7 @@ const CounterCard = () => {
         {counters.map((counter) => (
           <li
             key={counter._id}
-            onClick={() => handleCounterClick(counter._id)}
+            onClick={() => handleCounterClick(counter)}
             className="flex flex-col items-start p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out"
           >
             <span className="text-xl font-medium">{counter.name}</span>
