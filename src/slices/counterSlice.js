@@ -4,6 +4,7 @@ const counterSlice = createSlice({
     name: "counter",
     initialState: {
         dishes: [],
+        counters: [],
         details: null,
     },
     reducers: {
@@ -13,8 +14,11 @@ const counterSlice = createSlice({
         setCounterDetails: (state, action) => {
             state.details = action.payload;
         },
+        setCounters: (state, action) =>{
+            state.counters = action.payload;
+        }
     },
 });
 
-export const {setDishesOfCounter, setCounterDetails} = counterSlice.actions;
+export const {setDishesOfCounter, setCounterDetails, setCounters} = counterSlice.actions;
 export default counterSlice.reducer;

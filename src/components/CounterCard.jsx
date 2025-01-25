@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setCounterDetails } from "../slices/counterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCounterDetails, setCounters } from "../slices/counterSlice";
 
 const CounterCard = () => {
-  const [counters, setCounters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const counters = useSelector((state)=> state.counter.counters);
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -21,7 +21,7 @@ const CounterCard = () => {
         if (!response.status === 200) {
           throw new Error("Failed to fetch counters");
         }
-        setCounters(response.data);
+        dispatch(setCounters(response.data));
       } catch (error) {
         setError(error.message);
       } finally {

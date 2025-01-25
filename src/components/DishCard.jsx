@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setDishesOfCounter } from "../slices/counterSlice";
 
 const DishCard = () => {
-  const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { counterId } = useParams();
   const dispatch = useDispatch();
   const counterDetails = useSelector((state) => state.counter.details);
+  const dishes = useSelector((state)=> state.counter.dishes);
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -23,7 +23,6 @@ const DishCard = () => {
         console.log(response);
         if (response.status === 200) {
           dispatch(setDishesOfCounter(response.data));
-          setDishes(response.data);
         } else {
           throw new Error("Failed to fetch dishes");
         }
@@ -54,15 +53,6 @@ const DishCard = () => {
           <h3 className="text-xl font-medium text-gray-800">
             Counter Name: {counterDetails.name}
           </h3>
-          {/* <div className="text-sm text-gray-500 mt-2">
-            <strong>Merchants:</strong>
-            {counterDetails.merchants.map((merchant, index) => (
-              <span key={merchant._id} className="ml-2">
-                {merchant.name}
-                {index < counterDetails.merchants.length - 1 && ","}
-              </span>
-            ))}
-          </div> */}
         </div>
       )}
 
