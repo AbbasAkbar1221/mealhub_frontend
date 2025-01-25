@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setDishesOfCounter } from "../slices/counterSlice";
+import { addItemToCart, setCart } from "../slices/cartSlice";
 
 const DishCard = () => {
   const [loading, setLoading] = useState(true);
@@ -11,6 +12,30 @@ const DishCard = () => {
   const dispatch = useDispatch();
   const counterDetails = useSelector((state) => state.counter.details);
   const dishes = useSelector((state)=> state.counter.dishes);
+  const user = useSelector((state)=> state.auth.currentUser);
+  
+
+  const handleAddToCart = (dishId)=>{
+    const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+    const AddDishToCart = async () => {
+      try {
+        const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`);
+        // console.log("cart : ", response.data);
+        if (response.status === 201) {
+            dispatch(setCart(response.data));
+        } else {
+          throw new Error("Failed to fetch dishes");
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    AddDishToCart();
+  }
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -20,7 +45,7 @@ const DishCard = () => {
         const response = await axios.get(`${VITE_BACKEND_URL}/dish`, {
           params: { counterId },
         });
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           dispatch(setDishesOfCounter(response.data));
         } else {
@@ -78,7 +103,8 @@ const DishCard = () => {
                 {dish.inStock ? "In Stock" : "Out of Stock"}
               </p>
             </div>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            onClick={() => handleAddToCart(dish._id)}>
               Add to Cart
             </button>
           </li>

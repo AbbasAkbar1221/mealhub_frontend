@@ -3,67 +3,71 @@ import { createSlice } from "@reduxjs/toolkit";
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: [],
-    totalAmount: 0,
+    items: [], 
+    totalAmount: 0, 
   },
   reducers: {
-    addItemToCart(state, action) {
+  
+    setCart: (state, action) => {
+      state.items = action.payload.map((item) => ({
+        id: item._id,
+        dish: typeof item.dish === "object" ? item.dish : { _id: item.dish }, 
+        quantity: item.quantity,
+      }));
+      state.totalAmount = action.payload.reduce(
+        (total, item) =>
+          total + (item.dish.price || 0) * item.quantity, 
+        0
+      );
+    },
+
+    addItemToCart: (state, action) => {
       const newItem = action.payload;
-      const existingItem = state.items.find((item) => item.id === newItem._id);
+      const existingItem = state.items.find(
+        (item) => item.dish._id === newItem.dish._id
+      );
 
       if (existingItem) {
         existingItem.quantity += 1;
-        console.log(existingItem.quantity);
       } else {
-        state.items.push({ id: newItem._id, ...newItem, quantity: 1, isSelected: true });
+        state.items.push({
+          id: newItem.id,
+          dish: newItem.dish,
+          quantity: 1,
+        });
       }
 
-      state.totalAmount += newItem.price;
+      state.totalAmount += newItem.dish.price || 0;
     },
-    removeItemFromCart(state, action) {
-      const id = action.payload;
-      const itemToRemove = state.items.find((item) => item.id === id);
+
+    removeItemFromCart: (state, action) => {
+      const id = action.payload; 
+      const itemToRemove = state.items.find((item) => item.dish._id === id);
 
       if (itemToRemove) {
         if (itemToRemove.quantity === 1) {
-          state.items = state.items.filter((item) => item.id !== id);
-          state.totalAmount -= itemToRemove.price;
+          state.items = state.items.filter((item) => item.dish._id !== id);
         } else {
           itemToRemove.quantity -= 1;
-          state.totalAmount -= itemToRemove.price;
         }
-      }
-    },
-  
-    removeProduct(state, action) {
-      const id = action.payload;
-      const itemToRemove = state.items.find((item) => item.id === id);
-      if (itemToRemove) {
-        state.items = state.items.filter((item) => item.id !== id);
-        state.totalAmount -= itemToRemove.price * itemToRemove.quantity;
+        state.totalAmount -= itemToRemove.dish.price || 0;
       }
     },
 
-    clearCart(state) {
-      state.items = [];
-      state.totalAmount = 0;
-    },
-    toggleCheckBox: (state, action) => {
-      const id = action.payload;
-      const item = state.items.find((item) => item.id === id);
-      if (item) {
-        item.isSelected = !item.isSelected;
+    removeProduct: (state, action) => {
+      const id = action.payload; 
+      const itemToRemove = state.items.find((item) => item.dish._id === id);
+
+      if (itemToRemove) {
+        state.items = state.items.filter((item) => item.dish._id !== id);
+        state.totalAmount -=
+          (itemToRemove.dish.price || 0) * itemToRemove.quantity;
       }
     },
-    selectAll: (state) => {
-      state.items.forEach((item) => {
-        item.isSelected = true;
-      });
-    },
-    deselectAll: (state) => {
-      state.items.forEach((item) => {
-        item.isSelected = false;
-      });
+
+    clearCart: (state) => {
+      state.items = [];
+      state.totalAmount = 0;
     },
   },
 });
@@ -72,10 +76,8 @@ export const {
   addItemToCart,
   removeItemFromCart,
   clearCart,
-  toggleCheckBox,
   removeProduct,
-  selectAll,
-  deselectAll
+  setCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
