@@ -58,7 +58,15 @@ const CounterCard = () => {
           >
             <span className="text-xl font-medium">{counter.name}</span>
             <span className="text-sm text-gray-500 mt-2">
-              {counter.description}
+            <strong>Merchants:</strong> 
+              {counter.merchants.length > 0
+                ? counter.merchants.map((merchant, index) => (
+                    <span key={merchant._id} className="ml-2">
+                      {merchant.name}
+                      {index < counter.merchants.length - 1 && ", "}{" "}
+                    </span>
+                  ))
+                : "No merchant available"}
             </span>
           </li>
         ))}

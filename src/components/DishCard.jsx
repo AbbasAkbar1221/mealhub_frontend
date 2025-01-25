@@ -10,25 +10,23 @@ const DishCard = () => {
   const [error, setError] = useState(null);
   const { counterId } = useParams();
   const dispatch = useDispatch();
-  const counterDetails = useSelector(state => state.counter.details);
-  console.log(counterDetails);
-  
+  const counterDetails = useSelector((state) => state.counter.details);
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-    const fetchDishes = async () => { 
+    const fetchDishes = async () => {
       try {
         const response = await axios.get(`${VITE_BACKEND_URL}/dish`, {
-            params: {counterId}
+          params: { counterId },
         });
         console.log(response);
         if (response.status === 200) {
-            dispatch(setDishesOfCounter(response.data));
-            setDishes(response.data); 
-          } else {
-            throw new Error("Failed to fetch dishes");
-          }
+          dispatch(setDishesOfCounter(response.data));
+          setDishes(response.data);
+        } else {
+          throw new Error("Failed to fetch dishes");
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -40,31 +38,59 @@ const DishCard = () => {
   }, [counterId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center p-6">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center p-6 text-red-500">Error: {error}</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-3xl font-semibold text-center mb-6">Dishes</h2>
-      
+
       {counterDetails && (
         <div className="counter-details mb-6">
-          <h3 className="text-xl font-medium">Counter Name: {counterDetails.name}</h3>
-          {/* <p className="text-sm text-gray-500">{counterDetails.description}</p> */}
+          <h3 className="text-xl font-medium text-gray-800">
+            Counter Name: {counterDetails.name}
+          </h3>
+          {/* <div className="text-sm text-gray-500 mt-2">
+            <strong>Merchants:</strong>
+            {counterDetails.merchants.map((merchant, index) => (
+              <span key={merchant._id} className="ml-2">
+                {merchant.name}
+                {index < counterDetails.merchants.length - 1 && ","}
+              </span>
+            ))}
+          </div> */}
         </div>
       )}
+
       <ul className="space-y-4">
         {dishes.map((dish) => (
-          <li 
+          <li
             key={dish._id}
-            className="p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out"
+            className="p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out flex items-center"
           >
-            <h3 className="text-xl font-medium">{dish.name}</h3>
-            <p className="text-sm text-gray-500 mt-2"> ₹{dish.price}</p>
+            <img
+              src={dish.image}
+              alt={dish.name}
+              className="w-20 h-20 object-cover rounded-md mr-4"
+            />
+            <div className="flex-1">
+              <h3 className="text-xl font-medium text-gray-800">{dish.name}</h3>
+              <p className="text-sm text-gray-500 mt-1">₹{dish.price}</p>
+              <p
+                className={`text-sm mt-1 ${
+                  dish.inStock ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {dish.inStock ? "In Stock" : "Out of Stock"}
+              </p>
+            </div>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
+              Add to Cart
+            </button>
           </li>
         ))}
       </ul>
