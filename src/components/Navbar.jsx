@@ -12,8 +12,8 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-4">
-          <NavLink to="/" className="hover:text-gray-300">
-            Home
+          <NavLink to="/counter" className="hover:text-gray-300">
+            Counter
           </NavLink>
           <NavLink to="/cart" className="hover:text-gray-300">
             Cart

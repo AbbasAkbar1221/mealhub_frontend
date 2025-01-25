@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
 import DishCard from './components/DishCard';
+import CounterCard from './components/CounterCard';
 
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <div className=""> 
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/counter" element={<CounterCard/>} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/dishes/:counterId" element={<DishCard/>} />
           <Route path="/profile" element={<ProfilePage />} />
