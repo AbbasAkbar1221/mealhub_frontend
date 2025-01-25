@@ -12,9 +12,10 @@ const CounterCard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const fetchCounters = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/counter");
+        const response = await axios.get(`${VITE_BACKEND_URL}/counter`);
         console.log(response);
 
         if (!response.status === 200) {

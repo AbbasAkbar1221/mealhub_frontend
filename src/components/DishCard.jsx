@@ -15,9 +15,11 @@ const DishCard = () => {
   
 
   useEffect(() => {
-    const fetchDishes = async () => {
+    const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+    const fetchDishes = async () => { 
       try {
-        const response = await axios.get("http://localhost:8000/dish", {
+        const response = await axios.get(`${VITE_BACKEND_URL}/dish`, {
             params: {counterId}
         });
         console.log(response);
