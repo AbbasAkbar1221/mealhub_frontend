@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import CartItem from "../components/CartItem";
-import { setCart } from "../slices/cartSlice";
+import { setCart, setTotalAmount } from "../slices/cartSlice";
 
 const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const cartItems = useSelector((state) => state.cart.items);
-  const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const totalAmount = useSelector(setTotalAmount);
   const dispatch = useDispatch();
 
   useEffect(() => {

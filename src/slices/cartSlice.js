@@ -4,21 +4,11 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [], 
-    totalAmount: 0, 
   },
   reducers: {
   
     setCart: (state, action) => {
-      state.items = action.payload.map((item) => ({
-        id: item._id,
-        dish: typeof item.dish === "object" ? item.dish : { _id: item.dish }, 
-        quantity: item.quantity,
-      }));
-      state.totalAmount = action.payload.reduce(
-        (total, item) =>
-          total + (item.dish.price || 0) * item.quantity, 
-        0
-      );
+      state.items = action.payload;
     },
 
     addItemToCart: (state, action) => {
@@ -36,8 +26,6 @@ const cartSlice = createSlice({
           quantity: 1,
         });
       }
-
-      state.totalAmount += newItem.dish.price || 0;
     },
 
     removeItemFromCart: (state, action) => {
@@ -50,7 +38,6 @@ const cartSlice = createSlice({
         } else {
           itemToRemove.quantity -= 1;
         }
-        state.totalAmount -= itemToRemove.dish.price || 0;
       }
     },
 
@@ -60,14 +47,11 @@ const cartSlice = createSlice({
 
       if (itemToRemove) {
         state.items = state.items.filter((item) => item.dish._id !== id);
-        state.totalAmount -=
-          (itemToRemove.dish.price || 0) * itemToRemove.quantity;
       }
     },
 
     clearCart: (state) => {
       state.items = [];
-      state.totalAmount = 0;
     },
   },
 });
@@ -79,5 +63,12 @@ export const {
   removeProduct,
   setCart,
 } = cartSlice.actions;
+
+export function setTotalAmount(state){
+  return state.cart.items.reduce(
+    (total, item)=> total + (item.dish.price * item.quantity || 0),
+    0
+  )
+}
 
 export default cartSlice.reducer;
