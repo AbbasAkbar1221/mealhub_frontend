@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setDishesOfCounter } from "../slices/counterSlice";
-import { addItemToCart, setCart } from "../slices/cartSlice";
+import { setCart } from "../slices/cartSlice";
 
 const DishCard = () => {
   const [loading, setLoading] = useState(true);
@@ -11,11 +11,9 @@ const DishCard = () => {
   const { counterId } = useParams();
   const dispatch = useDispatch();
   const counterDetails = useSelector((state) => state.counter.details);
-  const dishes = useSelector((state)=> state.counter.dishes);
-  const user = useSelector((state)=> state.auth.currentUser);
-  
+  const dishes = useSelector((state) => state.counter.dishes);
 
-  const handleAddToCart = (dishId)=>{
+  const handleAddToCart = (dishId) => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const AddDishToCart = async () => {
@@ -23,7 +21,7 @@ const DishCard = () => {
         const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`);
         // console.log("cart : ", response.data);
         if (response.status === 201) {
-            dispatch(setCart(response.data));
+          dispatch(setCart(response.data));
         } else {
           throw new Error("Failed to fetch dishes");
         }
@@ -35,7 +33,7 @@ const DishCard = () => {
     };
 
     AddDishToCart();
-  }
+  };
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -107,6 +105,7 @@ const DishCard = () => {
             onClick={() => handleAddToCart(dish._id)}>
               Add to Cart
             </button>
+          
           </li>
         ))}
       </ul>

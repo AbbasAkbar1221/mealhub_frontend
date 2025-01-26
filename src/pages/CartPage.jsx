@@ -17,7 +17,6 @@ const CartPage = () => {
       try {
         const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
         const response = await axios.get(`${VITE_BACKEND_URL}/cart`);
-        // console.log("cart after ", response.data);
         dispatch(setCart(response.data)); 
         
       } catch (error) {

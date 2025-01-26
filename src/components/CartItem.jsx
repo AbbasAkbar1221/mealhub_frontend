@@ -11,9 +11,6 @@ const CartItem = ({ item }) => {
   };
 
   const handleIncreaseQuantity = () => {
-    console.log("item to add",item);
-    console.log("item to add dish",item.dish);
-
     if (item.dish && item.dish._id) {
       dispatch(addItemToCart(item));
   } else {
