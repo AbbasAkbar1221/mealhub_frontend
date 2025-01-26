@@ -56,7 +56,7 @@ const EditDishModal = ({ dish, onClose }) => {
             <CircularProgress
               size={50}
               color="inherit"
-              style={{ color: "#a09d9d" }}
+              style={{ color: "black" }}
             />{" "}
             
           </Box>
