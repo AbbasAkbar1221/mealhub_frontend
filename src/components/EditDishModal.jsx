@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setDishesOfCounter } from "../slices/counterSlice";
+import CircularProgress from "@mui/material/CircularProgress"; 
+import Box from "@mui/material/Box";
 
 const EditDishModal = ({ dish, onClose }) => {
   const [name, setName] = useState(dish.name);
@@ -44,77 +46,96 @@ const EditDishModal = ({ dish, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50 mt-10">
-      <div className="border border-black rounded-2xl p-2 bg-white shadow-lg">
-        <div className="bg-white p-8 rounded-2xl w-96">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Dish</h2>
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+    <div className="relative">
+      
+      {loading && <div className="fixed inset-0  bg-opacity-40 z-40"></div>}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price
-              </label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+      {loading && (
+        <div className="fixed inset-0 flex justify-center items-center z-50">
+          <Box sx={{ display: "flex" }}>
+            <CircularProgress
+              size={50}
+              color="inherit"
+              style={{ color: "#a09d9d" }}
+            />{" "}
+            
+          </Box>
+        </div>
+      )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Image URL
-              </label>
-              <input
-                type="text"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+      
+      <div className="fixed inset-0 flex justify-center items-center z-40 mt-10">
+        <div className="border border-black rounded-2xl p-2 bg-white shadow-lg">
+          <div className="bg-white p-8 rounded-2xl w-96">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Dish</h2>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={inStock}
-                onChange={() => setInStock(!inStock)}
-                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label className="ml-3 text-sm font-medium text-gray-700">
-                In Stock
-              </label>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
 
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                {loading ? "Updating..." : "Save Changes"}
-              </button>
-            </div>
-          </form>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={inStock}
+                  onChange={() => setInStock(!inStock)}
+                  className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label className="ml-3 text-sm font-medium text-gray-700">
+                  In Stock
+                </label>
+              </div>
+
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  {loading ? "Updating..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

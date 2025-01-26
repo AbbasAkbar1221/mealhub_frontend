@@ -5,88 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setDishesOfCounter } from "../slices/counterSlice";
 import { setCart } from "../slices/cartSlice";
-import EditDishModal from './EditDishModal'
+import EditDishModal from './EditDishModal';
+import CircularProgress from "@mui/material/CircularProgress";
 
-// const Card = ({dish}) => {
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const cartItems = useSelector((state) => state.cart.items);
-//   const isInCart = cartItems.some(item => item.dish._id === dish._id);
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-
-//   const handleAddToCart = (dishId) => {
-//     console.log(dishId)
-//     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-//     const addDishToCart = async () => {
-//       try {
-//         const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`);
-//         if (response.status === 201) {
-//           console.log(response.data);
-
-//           dispatch(setCart(response.data));
-//         } else {
-//           throw new Error("Failed to fetch dishes");
-//         }
-//       } catch (error) {
-//         setError(error.message);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     addDishToCart();
-//   };
-//   const handleGoToCart = () => {
-//     navigate('/cart');
-//   };
-//     return (
-//       <li
-//         key={dish._id}
-//         className="p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out flex items-center"
-//       >
-//         <img
-//           src={dish.image}
-//           alt={dish.name}
-//           className="w-20 h-20 object-cover rounded-md mr-4"
-//         />
-//         <div className="flex-1">
-//           <h3 className="text-xl font-medium text-gray-800">{dish.name}</h3>
-//           <p className="text-sm text-gray-500 mt-1">₹{dish.price}</p>
-//           <p
-//             className={`text-sm mt-1 ${
-//               dish.inStock ? "text-green-500" : "text-red-500"
-//             }`}
-//           >
-//             {dish.inStock ? "In Stock" : "Out of Stock"}
-//           </p>
-//         </div>
-//         <div>
-//           {isInCart ? (
-//             <button
-//               className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
-//               onClick={()=> handleGoToCart()}
-//             >
-//               Go to Cart
-//             </button>
-//           ) : (
-//             <button
-//               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
-//               onClick={() => handleAddToCart(dish._id)}
-//             >
-//               Add to Cart
-//             </button>
-//           )}
-//         </div>
-//       </li>
-//     );
-// }
-
-const Card = ({ dish }) => {
+const Card = ({ dish, onEdit }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false); // State to show the modal
   const cartItems = useSelector((state) => state.cart.items);
   const isInCart = cartItems.some((item) => item.dish._id === dish._id);
   const navigate = useNavigate();
@@ -118,61 +42,53 @@ const Card = ({ dish }) => {
     navigate("/cart");
   };
 
-  const handleEditDish = () => {
-    setShowEditModal(true);
-  };
-
   return (
-    <li className="p-4 bg-white shadow-md rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out flex items-center">
+    <li className="bg-white shadow-lg rounded-xl p-4 flex items-center justify-between space-x-6 hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-105 max-w-full overflow-hidden">
       <img
         src={dish.image}
         alt={dish.name}
-        className="w-20 h-20 object-cover rounded-md mr-4"
+        className="w-28 h-28 object-cover rounded-lg shadow-md"
       />
-      <div className="flex-1">
-        <h3 className="text-xl font-medium text-gray-800">{dish.name}</h3>
-        <p className="text-sm text-gray-500 mt-1">₹{dish.price}</p>
-        <p
-          className={`text-sm mt-1 ${dish.inStock ? "text-green-500" : "text-red-500"}`}
-        >
+      <div className="flex-1 ml-4">
+        <h3 className="text-xl font-semibold text-gray-800 truncate">{dish.name}</h3>
+        <p className="text-lg text-gray-600 mt-2">₹{dish.price}</p>
+        <p className={`text-sm mt-2 ${dish.inStock ? "text-green-500" : "text-red-500"}`}>
           {dish.inStock ? "In Stock" : "Out of Stock"}
         </p>
       </div>
-      <div className="space-x-2">
+
+      <div className="space-x-2 flex items-center">
         {isInCart ? (
           <button
-            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300"
             onClick={handleGoToCart}
           >
             Go to Cart
           </button>
         ) : (
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             onClick={() => handleAddToCart(dish._id)}
+            disabled={loading} 
           >
-            Add to Cart
+            {loading ? (
+              <CircularProgress size={24} className="text-white" />
+            ) : (
+              "Add to Cart"
+            )}
           </button>
         )}
-        
+
         <button
-          className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-300"
-          onClick={handleEditDish}
+          className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition duration-300"
+          onClick={() => onEdit(dish)}
         >
           Edit
         </button>
       </div>
-
-      {showEditModal && (
-        <EditDishModal
-          dish={dish}
-          onClose={() => setShowEditModal(false)} 
-        />
-      )}
     </li>
   );
 };
-
 
 const DishCard = () => {
   const [loading, setLoading] = useState(true);
@@ -181,6 +97,7 @@ const DishCard = () => {
   const dispatch = useDispatch();
   const counterDetails = useSelector((state) => state.counter.details);
   const dishes = useSelector((state) => state.counter.dishes);
+  const [selectedDish, setSelectedDish] = useState(null);
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -191,7 +108,6 @@ const DishCard = () => {
           params: { counterId },
         });
         if (response.status === 200) {
-          console.log("fetch dishes", response.data);
           dispatch(setDishesOfCounter(response.data));
         } else {
           throw new Error("Failed to fetch dishes");
@@ -207,8 +123,16 @@ const DishCard = () => {
     return () => dispatch(setDishesOfCounter([]));
   }, [counterId]);
 
+  const handleEditDish = (dish) => {
+    setSelectedDish(dish); 
+  };
+
   if (loading) {
-    return <div className="text-center p-6">Loading...</div>;
+    return (
+      <div className="text-center p-6 text-xl font-semibold text-gray-700">
+        Loading dishes...
+      </div>
+    );
   }
 
   if (error) {
@@ -216,8 +140,8 @@ const DishCard = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-3xl font-semibold text-center mb-6">Dishes</h2>
+    <div className="container mx-auto p-6 max-w-screen-lg z-30">
+      <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">Dishes</h2>
 
       {counterDetails && (
         <div className="counter-details mb-6">
@@ -227,12 +151,21 @@ const DishCard = () => {
         </div>
       )}
 
-      <ul className="space-y-4">
-        {dishes.map(dish => <Card dish={dish}/>)}
+      <ul className="space-y-6">
+        {dishes.map((dish) => (
+          <Card key={dish._id} dish={dish} onEdit={handleEditDish} />
+        ))}
       </ul>
+
+      
+      {selectedDish && (
+        <EditDishModal
+          dish={selectedDish}
+          onClose={() => setSelectedDish(null)} 
+        />
+      )}
     </div>
   );
 };
 
 export default DishCard;
-
