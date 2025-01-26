@@ -65,8 +65,8 @@ const CartItem = ({ item }) => {
       console.error("Error deleting dish:", error.message);
     }
   };
-
   return (
+    
     <div className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg mb-4">
       <div className="flex items-center">
         <img

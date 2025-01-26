@@ -4,8 +4,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const items = useSelector((state)=> state.cart.items);
-  const cartLength = items.length;
+  const cartLength = useSelector((state)=> state.cart.items.length);
   return (
     <nav className="bg-black text-white p-4 sticky top-0 shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center">

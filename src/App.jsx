@@ -8,26 +8,53 @@ import DishCard from "./components/DishCard";
 import CounterCard from "./components/CounterCard";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import {setCurrentUser, setLoading} from "./slices/authSlice"
+import { setCurrentUser, setLoading } from "./slices/authSlice";
+import { setCart } from "./slices/cartSlice";
 
 const App = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // useEffect(() => {
+  //   const fetchUserDetails = async () => {
+  //     dispatch(setLoading(true));
+  //     try {
+  //       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  //       const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`);
+  //       // console.log("user", response.data);
+
+  //       dispatch(setCurrentUser(response.data));
+  //       dispatch(setLoading(false));
+  //     } catch (err) {
+  //       console.error("Failed to fetch user details:", err);
+  //     }
+  //   };
+  //   fetchUserDetails();
+  // }, []);
+
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      dispatch(setLoading(true));
+    const fetchCart = async () => {
       try {
         const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-        const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`);
-        // console.log("user", response.data);
-
-        dispatch(setCurrentUser(response.data));
-        dispatch(setLoading(false));
-      } catch (err) {
-        console.error("Failed to fetch user details:", err);
+        const response = await axios.get(`${VITE_BACKEND_URL}/cart`);
+        dispatch(setCart(response.data));
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchUserDetails();
+
+    fetchCart();
   }, []);
+
+  if (loading) {
+    return <div className="text-center p-6">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center p-6 text-red-500">Error: {error}</div>;
+  }
 
   return (
     <Router>
