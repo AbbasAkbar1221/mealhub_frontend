@@ -1,109 +1,124 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCart } from "../slices/cartSlice";
 import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
-
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const [loading, setLoading] = useState(false);
 
   const handleRemoveItem = async (dishId) => {
     const payload = { changeQuantity: -1 };
+    setLoading(true);
 
     try {
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/cart/${dishId}`,
         payload
       );
-      console.log(response.data);
 
       if (response.status === 200) {
-        console.log("Cart updated successfully:", response.data);
         dispatch(setCart(response.data));
       } else {
-        throw new Error("Failed to remove item from cart");
+        throw new Error("Failed to update cart");
       }
     } catch (error) {
-      console.error("Error removing item:", error.message);
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleIncreaseQuantity = async (dishId) => {
     const payload = { changeQuantity: 1 };
+    setLoading(true);
 
     try {
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/cart/${dishId}`,
         payload
       );
-      console.log(response.data);
 
       if (response.status === 200) {
-        console.log("Cart updated successfully:", response.data);
         dispatch(setCart(response.data));
       } else {
-        throw new Error("Failed to add item from cart");
+        throw new Error("Failed to update cart");
       }
     } catch (error) {
-      console.error("Error adding item:", error.message);
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRemoveProduct = async (dishId) => {
+    setLoading(true);
+
     try {
       const response = await axios.delete(`${VITE_BACKEND_URL}/cart/${dishId}`);
-      console.log(response.data);
 
       if (response.status === 200) {
-        console.log(" Dish deleted successfully from cart:", response.data);
         dispatch(setCart(response.data));
       } else {
-        throw new Error("Failed to delete dish from cart");
+        throw new Error("Failed to remove product from cart");
       }
     } catch (error) {
-      console.error("Error deleting dish:", error.message);
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    
-    <div className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg mb-4">
-      <div className="flex items-center">
+    <div className="flex justify-between items-center p-5 bg-white rounded-lg shadow-lg hover:shadow-2xl mb-6 transition-all duration-300 ease-in-out">
+      
+      <div className="flex items-center space-x-5 w-2/3">
         <img
           src={item.dish.image}
           alt={item.dish.name}
-          className="w-16 h-16 object-cover rounded-md mr-4"
+          className="w-20 h-20 object-cover rounded-lg shadow-md"
         />
-
         <div>
-          <h3 className="text-lg font-semibold">{item.dish.name}</h3>
+          <h3 className="text-xl font-semibold text-gray-800">{item.dish.name}</h3>
           <p className="text-sm text-gray-500">₹{item.dish.price}</p>
         </div>
       </div>
-      <div className="flex items-center">
-        <button
-          onClick={() => handleIncreaseQuantity(item.dish._id)}
-          className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-300"
-        >
-          +
-        </button>
-        <span className="mx-2 text-xl">{item.quantity}</span>
+
+      
+      <p className="text-lg font-semibold text-gray-700 w-1/6">
+        ₹{item.dish.price * item.quantity}
+      </p>
+
+      
+      <div className="flex items-center space-x-3 w-1/6">
         <button
           onClick={() => handleRemoveItem(item.dish._id)}
-          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-300"
+          className="bg-yellow-400 text-white px-3 py-1 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300 ease-in-out"
+          disabled={loading}
         >
           -
         </button>
+
+        <span className="text-xl font-semibold text-gray-800">{item.quantity}</span>
+
         <button
-          onClick={() => handleRemoveProduct(item.dish._id)}
-          className="ml-4 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
+          onClick={() => handleIncreaseQuantity(item.dish._id)}
+          className="bg-teal-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-teal-600 transition-all duration-300 ease-in-out"
+          disabled={loading}
         >
-          Remove
+          +
         </button>
       </div>
-      <p className="text-lg font-semibold">
-        ₹{item.dish.price * item.quantity}
-      </p>
+      
+       <button
+        onClick={() => handleRemoveProduct(item.dish._id)}
+        className="bg-red-500 text-white p-2 rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 ease-in-out"
+        disabled={loading}
+      >
+        <DeleteIcon />
+      </button>
     </div>
   );
 };

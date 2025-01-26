@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoading } from "./slices/authSlice";
 import { setCart } from "./slices/cartSlice";
 
+
 const App = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
