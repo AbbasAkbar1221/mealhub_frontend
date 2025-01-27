@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoading } from "./slices/authSlice";
 import { setCart } from "./slices/cartSlice";
 import CircularProgress from "@mui/material/CircularProgress";
+import MerchantPanel from "./pages/MerchantPanel";
 
 
 const App = () => {
@@ -68,6 +69,7 @@ const App = () => {
           <Route path="/counter" element={<CounterCard />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/dishes/:counterId" element={<DishCard />} />
+          <Route path="/merchants" element={<MerchantPanel/>} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>

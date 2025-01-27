@@ -52,44 +52,6 @@ const CounterCard = () => {
     navigate(`/dishes/${counter._id}`);
   };
 
-//   return (
-//     <div className="container mx-auto p-6 max-w-4xl bg-white rounded-lg shadow-lg ">
-//       <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">
-//         Restaurant Counters
-//       </h2>
-//       <ul className="space-y-6">
-//         {counters.map((counter) => (
-//           <li
-//             key={counter._id}
-//             onClick={() => handleCounterClick(counter)}
-//             className="flex flex-col items-start p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer transform hover:scale-105"
-//           >
-//             <span className="text-2xl font-semibold text-gray-800">
-//               {counter.name}
-//             </span>
-//             <div className="mt-2 text-sm text-gray-500">
-//               <strong className="text-gray-700">Merchants:</strong>
-//               {counter.merchants.length > 0 ? (
-//                 counter.merchants.map((merchant, index) => (
-//                   <span key={merchant._id} className="ml-2 text-gray-600">
-//                     {merchant.name}
-//                     {index < counter.merchants.length - 1 && ", "}
-//                   </span>
-//                 ))
-//               ) : (
-//                 <span className="text-gray-500">No merchants available</span>
-//               )}
-//             </div>
-//             <span className="mt-4 text-xs text-gray-400">
-//               {counter.merchants.length} merchants
-//             </span>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
 return (
   <div className="min-h-screen bg-gray-100 py-8 px-4">
     <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">

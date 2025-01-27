@@ -22,14 +22,20 @@ const Navbar = () => {
           >
             Counter
           </NavLink>
-          <NavLink to="/cart" className="hover:text-gray-300 text-lg font-medium">
+          {/* <NavLink to="/cart" className="hover:text-gray-300 text-lg font-medium">
             Cart
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/profile"
             className="hover:text-gray-300 text-lg font-medium"
           >
             Profile
+          </NavLink>
+          <NavLink
+            to="/merchants"
+            className="hover:text-gray-300 text-lg font-medium"
+          >
+            Merchant Panel
           </NavLink>
         </div>
 

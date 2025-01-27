@@ -72,7 +72,7 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <div className="flex justify-between items-center p-5 bg-white rounded-lg shadow-lg hover:shadow-2xl mb-6 transition-all duration-300 ease-in-out">
+    <div className="max-w-4xl mx-auto flex justify-between items-center p-5 bg-white rounded-lg shadow-lg hover:shadow-2xl mb-6 transition-all duration-300 ease-in-out">
       
       <div className="flex items-center space-x-5 w-2/3">
         <img
@@ -95,7 +95,7 @@ const CartItem = ({ item }) => {
       <div className="flex items-center space-x-3 w-1/6">
         <button
           onClick={() => handleRemoveItem(item.dish._id)}
-          className="bg-yellow-400 text-white px-3 py-1 rounded-lg shadow-md hover:bg-yellow-500 transition-all duration-300 ease-in-out"
+          className="bg-gray-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-gray-500 transition-all duration-300 ease-in-out"
           disabled={loading}
         >
           -
@@ -105,7 +105,7 @@ const CartItem = ({ item }) => {
 
         <button
           onClick={() => handleIncreaseQuantity(item.dish._id)}
-          className="bg-teal-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-teal-600 transition-all duration-300 ease-in-out"
+          className="bg-gray-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-gray-600 transition-all duration-300 ease-in-out"
           disabled={loading}
         >
           +

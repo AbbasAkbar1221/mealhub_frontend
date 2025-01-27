@@ -10,7 +10,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 rounded-xl shadow-lg">
+    <div className="container mx-auto p-6 bg-gray-50 rounded-xl shadow-lg max-w-4xl">
       <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Your Cart</h2>
 
       {cartItems.length === 0 ? (
@@ -23,7 +23,7 @@ const CartPage = () => {
             ))}
           </div>
 
-          <div className="mt-8 flex justify-between items-center">
+          <div className="mt-8 flex justify-between items-center max-w-md mx-auto">
             <h3 className="text-2xl font-semibold text-gray-700">Total: ₹{totalAmount}</h3>
             <button
               className="bg-green-600 text-white px-8 py-3 rounded-lg shadow-md hover:bg-green-700 transition duration-300"
