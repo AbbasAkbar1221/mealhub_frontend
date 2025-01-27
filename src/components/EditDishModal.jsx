@@ -5,7 +5,7 @@ import { setDishesOfCounter } from "../slices/counterSlice";
 import CircularProgress from "@mui/material/CircularProgress"; 
 import Box from "@mui/material/Box";
 
-const EditDishModal = ({ dish, onClose }) => {
+const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
   const [name, setName] = useState(dish.name);
   const [price, setPrice] = useState(dish.price);
   const [image, setImage] = useState(dish.image);
@@ -42,13 +42,13 @@ const EditDishModal = ({ dish, onClose }) => {
       setError(error.message);
     } finally {
       setLoading(false);
+      setLoadingModalBg()
     }
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-[1000]">
       
-      {loading && <div className="fixed inset-0  bg-opacity-40 z-40"></div>}
 
       {loading && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
@@ -64,8 +64,8 @@ const EditDishModal = ({ dish, onClose }) => {
       )}
 
       
-      <div className="fixed inset-0 flex justify-center items-center z-40 mt-10">
-        <div className="border border-black rounded-2xl p-2 bg-white shadow-lg">
+      <div className="fixed inset-0 flex justify-center items-center z-50 mt-10">
+        <div className="border border-black rounded-2xl p-2 bg-white shadow-lg z-50">
           <div className="bg-white p-8 rounded-2xl w-96">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Dish</h2>
             {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -131,7 +131,8 @@ const EditDishModal = ({ dish, onClose }) => {
                   disabled={loading}
                   className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                  {loading ? "Updating..." : "Save Changes"}
+      
+                  {loading ? "updating..." : "Save Changes"}
                 </button>
               </div>
             </form>

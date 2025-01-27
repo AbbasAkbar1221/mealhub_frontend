@@ -10,6 +10,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoading } from "./slices/authSlice";
 import { setCart } from "./slices/cartSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const App = () => {
@@ -50,7 +51,7 @@ const App = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center p-6">Loading...</div>;
+    return <div className="text-center h-[100vh] p-6 flex justify-center items-center"><CircularProgress size={50} color="inherit" className="text-black" /></div>;
   }
 
   if (error) {
@@ -60,6 +61,7 @@ const App = () => {
   return (
     <Router>
       <Navbar />
+      <div className="bg-black opacity-50"></div>
       <div className="">
         <Routes>
           <Route path="/" element={<HomePage />} />

@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setDishesOfCounter } from "../slices/counterSlice";
 import { setCart } from "../slices/cartSlice";
-import EditDishModal from './EditDishModal';
+import EditDishModal from "./EditDishModal";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Card = ({ dish, onEdit }) => {
+const Card = ({ dish, onEdit, setLoadingModalBg }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const cartItems = useSelector((state) => state.cart.items);
@@ -50,9 +50,15 @@ const Card = ({ dish, onEdit }) => {
         className="w-28 h-28 object-cover rounded-lg shadow-md"
       />
       <div className="flex-1 ml-4">
-        <h3 className="text-xl font-semibold text-gray-800 truncate">{dish.name}</h3>
+        <h3 className="text-xl font-semibold text-gray-800 truncate">
+          {dish.name}
+        </h3>
         <p className="text-lg text-gray-600 mt-2">₹{dish.price}</p>
-        <p className={`text-sm mt-2 ${dish.inStock ? "text-green-500" : "text-red-500"}`}>
+        <p
+          className={`text-sm mt-2 ${
+            dish.inStock ? "text-green-500" : "text-red-500"
+          }`}
+        >
           {dish.inStock ? "In Stock" : "Out of Stock"}
         </p>
       </div>
@@ -69,10 +75,14 @@ const Card = ({ dish, onEdit }) => {
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
             onClick={() => handleAddToCart(dish._id)}
-            disabled={loading} 
+            disabled={loading}
           >
             {loading ? (
-              <CircularProgress size={24} className="text-white" />
+              <CircularProgress
+                size={24}
+                color="inherit"
+                className="text-black"
+              />
             ) : (
               "Add to Cart"
             )}
@@ -98,7 +108,10 @@ const DishCard = () => {
   const counterDetails = useSelector((state) => state.counter.details);
   const dishes = useSelector((state) => state.counter.dishes);
   const [selectedDish, setSelectedDish] = useState(null);
-
+  const [loadingModalBg, setLoadingModalBg] = useState(false);
+  function makeLoadingFalse() {
+    setLoadingModalBg(false);
+  }
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -122,15 +135,15 @@ const DishCard = () => {
     fetchDishes();
     return () => dispatch(setDishesOfCounter([]));
   }, [counterId]);
-
   const handleEditDish = (dish) => {
-    setSelectedDish(dish); 
+    setSelectedDish(dish);
+    setLoadingModalBg(true);
   };
 
   if (loading) {
     return (
-      <div className="text-center p-6 text-xl font-semibold text-gray-700">
-        Loading dishes...
+      <div className="text-center h-[100vh] p-6 flex justify-center items-center">
+        <CircularProgress size={50} color="inherit" className="text-black" />
       </div>
     );
   }
@@ -140,31 +153,47 @@ const DishCard = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-screen-lg z-30">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">Dishes</h2>
-
-      {counterDetails && (
-        <div className="counter-details mb-6">
-          <h3 className="text-xl font-medium text-gray-800">
-            Counter Name: {counterDetails.name}
-          </h3>
-        </div>
+    <>
+      {loadingModalBg && (
+        <div className="fixed opacity-30 h-[100vh] w-[100vw]  bg-black z-[100]"></div>
       )}
+      <div className="container mx-auto p-6 max-w-screen-lg z-30">
+        <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">
+          Dishes
+        </h2>
 
-      <ul className="space-y-6">
-        {dishes.map((dish) => (
-          <Card key={dish._id} dish={dish} onEdit={handleEditDish} />
-        ))}
-      </ul>
+        {counterDetails && (
+          <div className="counter-details mb-6">
+            <h3 className="text-xl font-medium text-gray-800">
+              Counter Name: {counterDetails.name}
+            </h3>
+          </div>
+        )}
 
-      
-      {selectedDish && (
-        <EditDishModal
-          dish={selectedDish}
-          onClose={() => setSelectedDish(null)} 
-        />
-      )}
-    </div>
+        <ul className="space-y-6">
+          {dishes.map((dish) => (
+            <Card
+              key={dish._id}
+              dish={dish}
+              setLoadingModalBg={setLoadingModalBg}
+              onEdit={handleEditDish}
+            />
+          ))}
+        </ul>
+
+        {selectedDish && (
+          <EditDishModal
+            dish={selectedDish}
+            loadingModalBg={loadingModalBg}
+            setLoadingModalBg={makeLoadingFalse}
+            onClose={() => {
+              setSelectedDish(null);
+              makeLoadingFalse();
+            }}
+          />
+        )}
+      </div>
+    </>
   );
 };
 
