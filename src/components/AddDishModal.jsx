@@ -94,19 +94,6 @@ const AddDishModal = ({ counterId, onClose, setLoadingModalBg }) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Counter
-                </label>
-                <input
-                  type="text"
-                  value={counterNewId}
-                  onChange={(e) => setCounterNewId(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Image URL
                 </label>
                 <input

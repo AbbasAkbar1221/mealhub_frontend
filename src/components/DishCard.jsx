@@ -7,6 +7,7 @@ import EditDishModal from "./EditDishModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import Card from "./Card";
 import AddDishModal from "./AddDishModal";
+import { removeProduct } from "../slices/cartSlice";
 
 const DishCard = () => {
   const [loading, setLoading] = useState(true);
@@ -83,6 +84,25 @@ const DishCard = () => {
     return () => dispatch(setCounterDetails([]));
   }, [counterId]);
 
+  const handleDeleteDish = async (dish) => {
+    setLoading(true); 
+    try {
+      const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+      const response = await axios.delete(`${VITE_BACKEND_URL}/dish/${dish._id}`);
+
+      if (response.status === 200) {
+        dispatch(setDishesOfCounter(dishes.filter((item) => item._id !== dish._id)));
+        dispatch(removeProduct(dish._id));  
+      } else {
+        throw new Error("Failed to delete dish");
+      }
+    } catch (error) {
+      setError(error.message); 
+    } finally {
+      setLoading(false); 
+    }
+  };
+
   const handleEditDish = (dish) => {
     setSelectedDish(dish);
     setLoadingModalBg(true);
@@ -133,14 +153,18 @@ const DishCard = () => {
 
         <ul className="space-y-6">
           {dishes.map((dish) => (
+            // dish._id!== null && (
             <Card
               key={dish._id}
               dish={dish}
               setLoadingModalBg={setLoadingModalBg}
               onEdit={handleEditDish}
+              onDelete={handleDeleteDish}
             />
+          // ) 
           ))}
         </ul>
+
         {selectedDish && (
           <EditDishModal
             dish={selectedDish}

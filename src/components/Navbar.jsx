@@ -5,6 +5,10 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const cartLength = useSelector((state)=> state.cart.items.length);
+  // const cartLength = useSelector((state) =>
+  //   state.cart.items.filter((item) => item.dish !== null).length
+  // );
+  
   return (
     <nav className="bg-black text-white p-4 sticky top-0 shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center">
@@ -22,9 +26,6 @@ const Navbar = () => {
           >
             Counter
           </NavLink>
-          {/* <NavLink to="/cart" className="hover:text-gray-300 text-lg font-medium">
-            Cart
-          </NavLink> */}
           <NavLink
             to="/profile"
             className="hover:text-gray-300 text-lg font-medium"
@@ -32,10 +33,22 @@ const Navbar = () => {
             Profile
           </NavLink>
           <NavLink
-            to="/merchants"
+            to="/myCounters"
             className="hover:text-gray-300 text-lg font-medium"
           >
-            Merchant Panel
+            My Counters
+          </NavLink>
+          <NavLink
+            to="/adminUsers"
+            className="hover:text-gray-300 text-lg font-medium"
+          >
+            Manage Users
+          </NavLink>
+          <NavLink
+            to="/adminCounters"
+            className="hover:text-gray-300 text-lg font-medium"
+          >
+            Manage Counters
           </NavLink>
         </div>
 

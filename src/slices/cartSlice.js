@@ -66,7 +66,7 @@ export const {
 
 export function setTotalAmount(state){
   return state.cart.items.reduce(
-    (total, item)=> total + (item.dish.price * item.quantity || 0),
+    (total, item)=> total + (item.dish && item.dish.price * item.quantity || 0),
     0
   )
 }

@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { setCart } from "../slices/cartSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Card = ({ dish, onEdit }) => {
+const Card = ({ dish, onEdit, onDelete }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const cartItems = useSelector((state) => state.cart.items);
-  const isInCart = cartItems.some((item) => item.dish._id === dish._id);
+  const isInCart = cartItems.some((item) => item.dish && item.dish._id === dish._id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -95,6 +95,7 @@ const Card = ({ dish, onEdit }) => {
 
         <button
           className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
+          onClick={() => onDelete(dish)}
         >
           Delete
         </button>

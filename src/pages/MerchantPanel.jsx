@@ -73,7 +73,7 @@ const MerchantPanel = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">Merchant Panel</h2>
+      <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">Counters</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {counters.map((counter) => (
