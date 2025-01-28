@@ -135,7 +135,7 @@ const DishCard = () => {
           Dishes
         </h2>
 
-        <div className="flex justify-end">
+        <div className="flex justify-start mb-6">
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition duration-300"
             onClick={() => handleAddDish()}

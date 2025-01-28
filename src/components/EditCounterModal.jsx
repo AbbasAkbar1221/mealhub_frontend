@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const AddCounterModal = ({ onClose, onAddCounter }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [merchants, setMerchants] = useState("");
+const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
+  const [name, setName] = useState(counter.name);
+  const [description, setDescription] = useState(counter.description);
+  const [merchants, setMerchants] = useState(counter.merchants.map((merchant) => merchant._id).join(","));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -15,6 +15,7 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const merchantIds = merchants
@@ -22,14 +23,17 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
         .map((id) => id.trim())
         .filter((id) => id);
 
-      const newCounter = { name, description, merchants: merchantIds };
-      const response = await axios.post(`${VITE_BACKEND_URL}/counter`, newCounter);
+      const updatedCounter = { name, description, merchants: merchantIds };
+      const response = await axios.patch(
+        `${VITE_BACKEND_URL}/counter/${counter._id}`,
+        updatedCounter
+      );
 
-      if (response.status === 201) {
-        onAddCounter(response.data); 
+      if (response.status === 200) {
+        onUpdateCounter(response.data); 
         onClose(); 
       } else {
-        throw new Error("Failed to add counter");
+        throw new Error("Failed to update counter");
       }
     } catch (error) {
       setError(error.message);
@@ -51,7 +55,7 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
       <div className="fixed inset-0 flex justify-center items-center z-50 mt-10">
         <div className="border border-black rounded-2xl p-2 bg-white shadow-lg z-50">
           <div className="bg-white p-6 rounded-2xl w-96 max-h-[75vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Add Counter</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Edit Counter</h2>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
@@ -106,7 +110,7 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
                   disabled={loading}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                  {loading ? "Adding..." : "Add Counter"}
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </form>
@@ -117,4 +121,4 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
   );
 };
 
-export default AddCounterModal;
+export default EditCounterModal;

@@ -4,18 +4,20 @@ import { CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setCounters } from "../slices/counterSlice";
 import AddCounterModal from "../components/AddCounterModal";
+import EditCounterModal from "../components/EditCounterModal";
 
 const AdminCounters = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCounter, setSelectedCounter] = useState(null);
   const [loadingModalBg, setLoadingModalBg] = useState(false);
   const counters = useSelector((state) => state.counter.counters);
   const dispatch = useDispatch();
 
-useEffect(() => {
+  useEffect(() => {
     if (isModalOpen) {
-      document.body.style.overflow = "hidden"; 
+      document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
@@ -23,7 +25,7 @@ useEffect(() => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isModalOpen]); 
+  }, [isModalOpen]);
 
   useEffect(() => {
     const fetchCounters = async () => {
@@ -53,6 +55,16 @@ useEffect(() => {
 
   const handleAddCounter = (newCounter) => {
     dispatch(setCounters([...counters, newCounter]));
+  };
+
+  const handleEditCounter = (updatedCounter) => {
+    dispatch(
+      setCounters(
+        counters.map((counter) =>
+          counter._id === updatedCounter._id ? updatedCounter : counter
+        )
+      )
+    );
   };
 
   if (loading)
@@ -97,9 +109,10 @@ useEffect(() => {
                 <p className="text-gray-400 mb-6">{counter.description}</p>
                 <div className="flex justify-between items-center">
                   <button
-                    onClick={() =>
-                      alert("Edit functionality not implemented yet")
-                    }
+                    // onClick={() => handleEditCounter(counter)}
+                    onClick={() => {
+                      setSelectedCounter(counter), setLoadingModalBg(true);
+                    }}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
                   >
                     Edit
@@ -122,9 +135,17 @@ useEffect(() => {
               setLoadingModalBg(false);
             }}
             onAddCounter={handleAddCounter}
-            setLoadingModalBg={() => {
+          />
+        )}
+
+        {selectedCounter && (
+          <EditCounterModal
+            counter={selectedCounter}
+            onClose={() => {
+              setSelectedCounter(null);
               setLoadingModalBg(false);
             }}
+            onUpdateCounter={handleEditCounter}
           />
         )}
       </div>
