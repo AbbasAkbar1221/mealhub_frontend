@@ -14,7 +14,8 @@ const DishCard = () => {
   const [error, setError] = useState(null);
   const { counterId } = useParams();
   const dispatch = useDispatch();
-  const counterDetails = useSelector((state) => state.counter.details);
+  // const counterDetails = useSelector((state) => state.counter.details);
+  const counterDetails = useSelector((state) => state.counter.currentCounter);
   const dishes = useSelector((state) => state.counter.dishes);
   const [selectedDish, setSelectedDish] = useState(null);
   const [loadingModalBg, setLoadingModalBg] = useState(false);

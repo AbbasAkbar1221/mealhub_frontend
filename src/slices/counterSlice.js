@@ -5,7 +5,7 @@ const counterSlice = createSlice({
   initialState: {
     dishes: [],
     counters: [],
-    details: null,
+    currentCounter: null,
   },
   reducers: {
     setDishesOfCounter: (state, action) => {
