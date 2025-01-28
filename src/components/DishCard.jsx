@@ -23,7 +23,7 @@ const DishCard = () => {
   }
 
   useEffect(() => {
-    if (selectedDish) {
+    if (selectedDish || showAddDishModal) {
       document.body.style.overflow = "hidden"; 
     } else {
       document.body.style.overflow = "auto";
@@ -32,7 +32,7 @@ const DishCard = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [selectedDish]); 
+  }, [selectedDish, showAddDishModal]); 
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -141,7 +141,6 @@ const DishCard = () => {
             />
           ))}
         </ul>
-
         {selectedDish && (
           <EditDishModal
             dish={selectedDish}
@@ -164,11 +163,6 @@ const DishCard = () => {
               makeLoadingFalse();
             }}
           />
-        )}
-        {showAddDishModal?  (
-          document.body.style.overflow = "hidden"
-        ): (
-          document.body.style.overflow = "auto"
         )}
       </div>
     </div>
