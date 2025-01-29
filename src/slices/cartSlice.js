@@ -64,11 +64,16 @@ export const {
   setCart,
 } = cartSlice.actions;
 
+
 export function setTotalAmount(state){
   return state.cart.items.reduce(
     (total, item)=> total + (item.dish && item.dish.price * item.quantity || 0),
     0
   )
 }
+
+
+
+
 
 export default cartSlice.reducer;

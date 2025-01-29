@@ -15,7 +15,6 @@ const CounterModal = ({
     counter ? counter.description : ""
   );
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const counters = useSelector((state) => state.counter.counters);
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -23,9 +22,12 @@ const CounterModal = ({
   const handleSaveCounter = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/counter/${counter._id}`,
-        { name: counterName, description: counterDes }
+        { name: counterName, description: counterDes }, {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (response.status === 201) {
@@ -39,7 +41,7 @@ const CounterModal = ({
         throw new Error("Failed to save counter");
       }
     } catch (error) {
-      setError(error.message);
+      console.error(error);
     } finally {
       setLoading(false);
       setLoadingModalBg();
@@ -71,7 +73,7 @@ const CounterModal = ({
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Edit Counter
             </h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            
             <form onSubmit={handleSaveCounter} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

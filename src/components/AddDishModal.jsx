@@ -23,8 +23,11 @@ const AddDishModal = ({ counterId, onClose, setLoadingModalBg }) => {
     setLoading(true);
 
     try {
+      const token = localStorage.getItem("token");
       const newDish = { name, price, counter: counterNewId, image, inStock };
-      const response = await axios.post(`${VITE_BACKEND_URL}/dish`, newDish);
+      const response = await axios.post(`${VITE_BACKEND_URL}/dish`, newDish,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (response.status === 201) {
         const updatedDishes = [...dishes, response.data];

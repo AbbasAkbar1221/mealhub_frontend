@@ -7,7 +7,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const CounterCard = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const counters = useSelector((state) => state.counter.counters);
@@ -16,13 +15,16 @@ const CounterCard = () => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const fetchCounters = async () => {
       try {
-        const response = await axios.get(`${VITE_BACKEND_URL}/counter`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${VITE_BACKEND_URL}/counter`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (response.status !== 200) {
           throw new Error("Failed to fetch counters");
         }
         dispatch(setCounters(response.data));
       } catch (error) {
-        setError(error.message);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -43,9 +45,7 @@ const CounterCard = () => {
     );
   }
 
-  if (error) {
-    return <div className="text-center text-red-500">Error: {error}</div>;
-  }
+  
 
   const handleCounterClick = (counter) => {
     dispatch(setCounterDetails(counter));

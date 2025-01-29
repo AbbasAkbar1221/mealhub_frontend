@@ -12,11 +12,13 @@ const CartItem = ({ item }) => {
   const handleRemoveItem = async (dishId) => {
     const payload = { changeQuantity: -1 };
     setLoading(true);
+    const token = localStorage.getItem("token");
 
     try {
       const response = await axios.patch(
-        `${VITE_BACKEND_URL}/cart/${dishId}`,
-        payload
+        `${VITE_BACKEND_URL}/cart/${dishId}`, payload ,{
+          headers: { Authorization: `Bearer ${token}` }
+        }
       );
 
       if (response.status === 200) {
@@ -34,11 +36,13 @@ const CartItem = ({ item }) => {
   const handleIncreaseQuantity = async (dishId) => {
     const payload = { changeQuantity: 1 };
     setLoading(true);
+    const token = localStorage.getItem("token");
 
     try {
       const response = await axios.patch(
-        `${VITE_BACKEND_URL}/cart/${dishId}`,
-        payload
+        `${VITE_BACKEND_URL}/cart/${dishId}`,  payload ,{
+          headers: { Authorization: `Bearer ${token}` }
+        }
       );
 
       if (response.status === 200) {
@@ -57,7 +61,10 @@ const CartItem = ({ item }) => {
     setLoading(true);
 
     try {
-      const response = await axios.delete(`${VITE_BACKEND_URL}/cart/${dishId}`);
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`${VITE_BACKEND_URL}/cart/${dishId}`,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (response.status === 200) {
         dispatch(setCart(response.data));

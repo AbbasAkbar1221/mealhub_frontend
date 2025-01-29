@@ -11,10 +11,8 @@ import { removeProduct } from "../slices/cartSlice";
 
 const DishCard = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const { counterId } = useParams();
   const dispatch = useDispatch();
-  // const counterDetails = useSelector((state) => state.counter.details);
   const counterDetails = useSelector((state) => state.counter.currentCounter);
   const dishes = useSelector((state) => state.counter.dishes);
   const [selectedDish, setSelectedDish] = useState(null);
@@ -26,7 +24,7 @@ const DishCard = () => {
 
   useEffect(() => {
     if (selectedDish || showAddDishModal) {
-      document.body.style.overflow = "hidden"; 
+      document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
@@ -34,15 +32,17 @@ const DishCard = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [selectedDish, showAddDishModal]); 
+  }, [selectedDish, showAddDishModal]);
 
   useEffect(() => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const fetchDishes = async () => {
       try {
+        const token = localStorage.getItem("token");
         const response = await axios.get(`${VITE_BACKEND_URL}/dish`, {
           params: { counterId },
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (response.status === 200) {
           dispatch(setDishesOfCounter(response.data));
@@ -50,7 +50,7 @@ const DishCard = () => {
           throw new Error("Failed to fetch dishes");
         }
       } catch (error) {
-        setError(error.message);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -65,9 +65,11 @@ const DishCard = () => {
 
     const fetchCounter = async () => {
       try {
+        const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${VITE_BACKEND_URL}/counter/${counterId}`,
-          {}
+          `${VITE_BACKEND_URL}/counter/${counterId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          }
         );
         if (response.status === 200) {
           dispatch(setCounterDetails(response.data));
@@ -75,7 +77,7 @@ const DishCard = () => {
           throw new Error("Failed to fetch counter");
         }
       } catch (error) {
-        setError(error.message);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -83,24 +85,31 @@ const DishCard = () => {
 
     fetchCounter();
     return () => dispatch(setCounterDetails([]));
-  }, [counterId]);
+  }, []);
 
   const handleDeleteDish = async (dish) => {
-    setLoading(true); 
+    setLoading(true);
     try {
+      const token = localStorage.getItem("token");
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-      const response = await axios.delete(`${VITE_BACKEND_URL}/dish/${dish._id}`);
+      const response = await axios.delete(
+        `${VITE_BACKEND_URL}/dish/${dish._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (response.status === 200) {
-        dispatch(setDishesOfCounter(dishes.filter((item) => item._id !== dish._id)));
-        dispatch(removeProduct(dish._id));  
+        dispatch(
+          setDishesOfCounter(dishes.filter((item) => item._id !== dish._id))
+        );
+        dispatch(removeProduct(dish._id));
       } else {
         throw new Error("Failed to delete dish");
       }
     } catch (error) {
-      setError(error.message); 
+      console.error("Error:", error.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -121,12 +130,9 @@ const DishCard = () => {
     );
   }
 
-  if (error) {
-    return <div className="text-center p-6 text-red-500">Error: {error}</div>;
-  }
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 h-[100vh]">
       {loadingModalBg && (
         <div className="fixed opacity-30 h-[100vh] w-[100vw]  bg-black z-[100]"></div>
       )}
@@ -153,7 +159,8 @@ const DishCard = () => {
         )}
 
         <ul className="space-y-6">
-          {dishes.map((dish) => (
+          {dishes.length === 0 ? ( <p className="text-2xl text-center text-gray-800">No dishes found.</p>):(
+          dishes.map((dish) => (
             // dish._id!== null && (
             <Card
               key={dish._id}
@@ -162,8 +169,8 @@ const DishCard = () => {
               onEdit={handleEditDish}
               onDelete={handleDeleteDish}
             />
-          // ) 
-          ))}
+          )))}
+          
         </ul>
 
         {selectedDish && (
@@ -178,10 +185,9 @@ const DishCard = () => {
           />
         )}
 
-
         {showAddDishModal && (
           <AddDishModal
-          counterId={counterId}
+            counterId={counterId}
             setLoadingModalBg={makeLoadingFalse}
             onClose={() => {
               setShowAddDishModal(false);

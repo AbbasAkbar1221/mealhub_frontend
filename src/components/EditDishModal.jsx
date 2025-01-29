@@ -11,7 +11,6 @@ const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
   const [image, setImage] = useState(dish.image);
   const [inStock, setInStock] = useState(dish.inStock);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const dishes = useSelector((state) => state.counter.dishes);
 
@@ -22,10 +21,13 @@ const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
     setLoading(true);
 
     try {
+      const token = localStorage.getItem("token");
       const updatedDish = { name, price, image, inStock };
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/dish/${dish._id}`,
-        updatedDish
+        updatedDish, {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (response.status === 200) {
@@ -39,7 +41,7 @@ const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
         throw new Error("Failed to update dish");
       }
     } catch (error) {
-      setError(error.message);
+      console.error(error);
     } finally {
       setLoading(false);
       setLoadingModalBg()
@@ -68,7 +70,7 @@ const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
         <div className="border border-black rounded-2xl p-2 bg-white shadow-lg z-50">
           <div className="bg-white p-8 rounded-2xl w-96">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Dish</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

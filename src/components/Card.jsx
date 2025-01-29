@@ -1,39 +1,55 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCart } from "../slices/cartSlice";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useRetryCall } from "../hooks";
+import axios from "axios";
 
 const Card = ({ dish, onEdit, onDelete }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const cartItems = useSelector((state) => state.cart.items);
   const isInCart = cartItems.some((item) => item.dish && item.dish._id === dish._id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, retryCall] = useRetryCall("post");
 
   const handleAddToCart = (dishId) => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     const addDishToCart = async () => {
       try {
-        setLoading(true);
-        const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`);
+        const token = localStorage.getItem("token");
+        const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`,{},{
+          headers: { Authorization: `Bearer ${token}` }
+        })
         if (response.status === 201) {
           dispatch(setCart(response.data));
         } else {
           throw new Error("Failed to add dish to cart");
         }
       } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+        console.log("Error:", error.message);
       }
     };
-
     addDishToCart();
   };
+  // const handleAddToCart = (dishId) => {
+  //   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+  //   const addDishToCart = async () => {
+  //     try {
+  //       const response = await retryCall(`${VITE_BACKEND_URL}/cart/${dishId}`)
+  //       if (response.status === 201) {
+  //         dispatch(setCart(response.data));
+  //       } else {
+  //         throw new Error("Failed to add dish to cart");
+  //       }
+  //     } catch (error) {
+  //       console.log("Error:", error.message);
+  //     }
+  //   };
+  //   addDishToCart();
+  // };
 
   const handleGoToCart = () => {
     navigate("/cart");
@@ -69,6 +85,7 @@ const Card = ({ dish, onEdit, onDelete }) => {
             Go to Cart
           </button>
         ) : (
+          dish.inStock && (
           <button
             className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300"
             onClick={() => handleAddToCart(dish._id)}
@@ -84,6 +101,7 @@ const Card = ({ dish, onEdit, onDelete }) => {
               "Add to Cart"
             )}
           </button>
+          )
         )}
 
         <button

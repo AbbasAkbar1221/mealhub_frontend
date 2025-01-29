@@ -8,14 +8,12 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
   const [description, setDescription] = useState(counter.description);
   const [merchants, setMerchants] = useState(counter.merchants.map((merchant) => merchant._id).join(","));
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     try {
       const merchantIds = merchants
@@ -24,9 +22,12 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
         .filter((id) => id);
 
       const updatedCounter = { name, description, merchants: merchantIds };
+      const token = localStorage.getItem("token");
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/counter/${counter._id}`,
-        updatedCounter
+        updatedCounter, {
+          headers: { Authorization: `Bearer ${token}` }
+        }
       );
 
       if (response.status === 200) {
@@ -36,7 +37,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
         throw new Error("Failed to update counter");
       }
     } catch (error) {
-      setError(error.message);
+      console.error("Error:", error.message);
     } finally {
       setLoading(false);
     }
@@ -56,7 +57,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
         <div className="border border-black rounded-2xl p-2 bg-white shadow-lg z-50">
           <div className="bg-white p-6 rounded-2xl w-96 max-h-[75vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Edit Counter</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

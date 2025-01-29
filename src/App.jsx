@@ -2,51 +2,59 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
-import CartPage from "./pages/CartPage";
+import CartPage from "./pages/CartPage"
 import ProfilePage from "./pages/ProfilePage";
 import DishCard from "./components/DishCard";
 import CounterCard from "./components/CounterCard";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoading } from "./slices/authSlice";
 import { setCart } from "./slices/cartSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 import MerchantPanel from "./pages/MerchantPanel";
 import AdminUsers from "./pages/AdminUsers";
 import AdminCounters from "./pages/AdminCounters";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 
 const App = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  // useEffect(() => {
-  //   const fetchUserDetails = async () => {
-  //     dispatch(setLoading(true));
-  //     try {
-  //       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  //       const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`);
-  //       // console.log("user", response.data);
+  const loading  = useSelector((state) => state.auth.loading);
 
-  //       dispatch(setCurrentUser(response.data));
-  //       dispatch(setLoading(false));
-  //     } catch (err) {
-  //       console.error("Failed to fetch user details:", err);
-  //     }
-  //   };
-  //   fetchUserDetails();
-  // }, []);
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      dispatch(setLoading(true));
+      try {
+        const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        dispatch(setCurrentUser(response.data));
+        dispatch(setLoading(false));
+      } catch (err) {
+        console.error("Failed to fetch user details:", err);
+      }
+    };
+    fetchUserDetails();
+  }, []);
 
   useEffect(() => {
     const fetchCart = async () => {
+      dispatch(setLoading(true));
       try {
         const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-        const response = await axios.get(`${VITE_BACKEND_URL}/cart`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${VITE_BACKEND_URL}/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         dispatch(setCart(response.data));
       } catch (error) {
-        setError(error.message);
+        console.error(error.message);
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
@@ -57,9 +65,7 @@ const App = () => {
     return <div className="text-center h-[100vh] p-6 flex justify-center items-center"><CircularProgress size={50} color="inherit" className="text-black" /></div>;
   }
 
-  if (error) {
-    return <div className="text-center p-6 text-red-500">Error: {error}</div>;
-  }
+  
 
   return (
     <Router>
@@ -75,6 +81,8 @@ const App = () => {
           <Route path="/adminUsers" element={<AdminUsers/>} />
           <Route path="/adminCounters" element={<AdminCounters/>} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/register" element={<RegisterPage/>} />
         </Routes>
       </div>
     </Router>

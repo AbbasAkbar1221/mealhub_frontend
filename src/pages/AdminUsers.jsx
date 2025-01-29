@@ -6,7 +6,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [roleOptions] = useState(["Customer", "Merchant", "Admin"]);
   const users = useSelector((state) => state.auth.users);
   const dispatch = useDispatch();
@@ -15,11 +14,14 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       try {
-        const response = await axios.get(`${VITE_BACKEND_URL}/user`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${VITE_BACKEND_URL}/user`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         dispatch(setUsers(response.data));
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        console.error(err);
         setLoading(false);
       }
     };
@@ -30,23 +32,29 @@ const AdminUsers = () => {
   const handleDelete = async (id) => {
     try {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-      await axios.delete(`${VITE_BACKEND_URL}/user/${id}`);
+      const token = localStorage.getItem("token");
+      await axios.delete(`${VITE_BACKEND_URL}/user/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       dispatch(setUsers(users.filter((user) => user._id !== id)));
     } catch (error) {
-      setError(error.message);
+      console.error(error.message);
     }
   };
 
   const handleRoleChange = async (id, newRole) => {
     try {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-      await axios.patch(`${VITE_BACKEND_URL}/user/${id}`, { role: newRole });
+      const token = localStorage.getItem("token");
+      await axios.patch(`${VITE_BACKEND_URL}/user/${id}`, { role: newRole }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const updatedUsers = users.map((user) =>
         user._id === id ? { ...user, role: newRole } : user
       );
       dispatch(setUsers(updatedUsers));
     } catch (error) {
-      setError(error.message);
+      console.error(error.message);
     }
   };
 
@@ -56,8 +64,7 @@ const AdminUsers = () => {
         <CircularProgress size={50} color="inherit" className="text-black" />
       </div>
     );
-  if (error)
-    return <div className="text-center p-4 text-red-600">Error: {error}</div>;
+  
 
   return (
     <div className="p-6">

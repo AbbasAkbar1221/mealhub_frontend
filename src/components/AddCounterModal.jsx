@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { useRetryCall } from "../hooks";
 
 const AddCounterModal = ({ onClose, onAddCounter }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [merchants, setMerchants] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -23,7 +23,11 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
         .filter((id) => id);
 
       const newCounter = { name, description, merchants: merchantIds };
-      const response = await axios.post(`${VITE_BACKEND_URL}/counter`, newCounter);
+      
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${VITE_BACKEND_URL}/counter`, newCounter,{
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
       if (response.status === 201) {
         onAddCounter(response.data); 
@@ -32,7 +36,8 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
         throw new Error("Failed to add counter");
       }
     } catch (error) {
-      setError(error.message);
+      console.log(error.message);
+      
     } finally {
       setLoading(false);
     }
@@ -52,7 +57,7 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
         <div className="border border-black rounded-2xl p-2 bg-white shadow-lg z-50">
           <div className="bg-white p-6 rounded-2xl w-96 max-h-[75vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Add Counter</h2>
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

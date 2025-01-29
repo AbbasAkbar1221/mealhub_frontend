@@ -13,7 +13,7 @@ const counterSlice = createSlice({
     },
 
     setCounterDetails: (state, action) => {
-      state.details = action.payload;
+      state.currentCounter = action.payload;
     },
     setCounters: (state, action) => {
       state.counters = action.payload;

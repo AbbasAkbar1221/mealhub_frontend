@@ -7,7 +7,6 @@ import CounterModal from "../components/MerchantCounterModal";
 
 const MerchantPanel = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showCounterModal, setShowCounterModal] = useState(false);
   const [selectedCounter, setSelectedCounter] = useState(null);
   const counters = useSelector((state) => state.counter.counters);
@@ -17,14 +16,18 @@ const MerchantPanel = () => {
     const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const fetchCounters = async () => {
       try {
-        const response = await axios.get(`${VITE_BACKEND_URL}/cart/merchant/counter`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${VITE_BACKEND_URL}/cart/merchant/counter`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (response.status === 200) {
           dispatch(setCounters(response.data));
         } else {
           throw new Error("Failed to fetch counters");
         }
       } catch (error) {
-        setError(error.message);
+        console.log(error);
+        
       } finally {
         setLoading(false);
       }
@@ -63,13 +66,7 @@ const MerchantPanel = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="text-center text-red-500 mt-10">
-        <p className="text-xl font-semibold">Error: {error}</p>
-      </div>
-    );
-  }
+ 
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
