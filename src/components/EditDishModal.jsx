@@ -51,7 +51,6 @@ const EditDishModal = ({ dish, onClose ,loadingModalBg,setLoadingModalBg}) => {
   return (
     <div className="relative z-[1000]">
       
-
       {loading && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <Box sx={{ display: "flex" }}>

@@ -31,6 +31,7 @@ const CounterCard = () => {
     };
 
     fetchCounters();
+    ()=> dispatch(setCounters([]));
   }, []);
 
   if (loading) {

@@ -27,6 +27,7 @@ const AdminUsers = () => {
     };
 
     fetchUsers();
+    return () => dispatch(setUsers([]));
   }, []);
 
   const handleDelete = async (id) => {

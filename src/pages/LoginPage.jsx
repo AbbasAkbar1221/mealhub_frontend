@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { MdFastfood } from "react-icons/md";
+import { setLoading } from "../slices/authSlice";
 
 
 export default function LoginPage() {
@@ -29,18 +30,28 @@ export default function LoginPage() {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const response = await axios.post(`${VITE_BACKEND_URL}/auth/login`, { email, password });
 
-      const { token, refresh_token, user } = response?.data || {};
+      const { token, refresh_token} = response?.data || {};
 
       if (!token || !refresh_token) {
         throw new Error("Invalid response from the server. Please try again.");
       }
 
-      dispatch(setCurrentUser(user));
-
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refresh_token);
 
-      navigate("/counter");
+      dispatch(setLoading(true));
+      try {
+        const userResponse = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setCurrentUser(userResponse.data));
+        dispatch(setLoading(false));
+
+        navigate("/counter");
+      } catch (err) {
+        console.error("Failed to fetch user details:", err);
+        dispatch(setLoading(false));
+      }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Something went wrong. Please try again.";
       setError(errorMessage);
@@ -60,13 +71,13 @@ export default function LoginPage() {
       
       <div className="mb-6 flex items-center gap-2">
         <MdFastfood className="text-yellow-500 text-4xl" />
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">MealHub</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Foodie Heaven</h1>
       </div>
 
       
       <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white text-center mb-4">
-          Sign in to MealHub
+          Sign in to Foodie Heaven
         </h2>
 
         <form onSubmit={handleSubmit}>
@@ -120,7 +131,7 @@ export default function LoginPage() {
 
         
         <p className="text-xs text-gray-600 dark:text-gray-400 mt-4 text-center">
-          By continuing, you agree to MealHub's{" "}
+          By continuing, you agree to Foodie Heaven's{" "}
           <a href="#" className="text-yellow-500 hover:underline">
             Terms of Service
           </a>{" "}

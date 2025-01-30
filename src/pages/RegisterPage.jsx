@@ -50,7 +50,7 @@ export default function RegisterPage() {
     <div className="flex flex-col items-center min-h-screen bg-white dark:bg-gray-900 p-4">
       <div className="mb-6 flex items-center gap-2">
               <MdFastfood className="text-yellow-500 text-4xl" />
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">MealHub</h1>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Foodie Heaven</h1>
             </div>
 
       <div className="w-full max-w-md bg-gray-50 dark:bg-gray-800 p-4 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md">

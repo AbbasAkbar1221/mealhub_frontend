@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
@@ -20,23 +20,25 @@ import RegisterPage from "./pages/RegisterPage";
 
 const App = () => {
   const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
   const loading  = useSelector((state) => state.auth.loading);
+  const user = useSelector((state) => state.auth.currentUser);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       dispatch(setLoading(true));
       try {
         const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-        const token = localStorage.getItem("token");
         const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         dispatch(setCurrentUser(response.data));
         dispatch(setLoading(false));
+        
       } catch (err) {
         console.error("Failed to fetch user details:", err);
       }
+      
     };
     fetchUserDetails();
   }, []);
@@ -59,7 +61,8 @@ const App = () => {
     };
 
     fetchCart();
-  }, []);
+    return () => dispatch(setCart([]));
+  }, [user]);
 
   if (loading) {
     return <div className="text-center h-[100vh] p-6 flex justify-center items-center"><CircularProgress size={50} color="inherit" className="text-black" /></div>;

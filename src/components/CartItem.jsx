@@ -113,7 +113,7 @@ const CartItem = ({ item }) => {
         <button
           onClick={() => handleIncreaseQuantity(item.dish._id)}
           className="bg-gray-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-gray-600 transition-all duration-300 ease-in-out"
-          disabled={loading}
+          disabled={loading || !item.dish.inStock}
         >
           +
         </button>

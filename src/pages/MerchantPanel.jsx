@@ -34,6 +34,7 @@ const MerchantPanel = () => {
     };
 
     fetchCounters();
+    return () => dispatch(setCounters([]));
   }, []);
 
   useEffect(() => {

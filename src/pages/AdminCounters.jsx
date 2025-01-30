@@ -43,6 +43,7 @@ const AdminCounters = () => {
     };
 
     fetchCounters();
+    return () => dispatch(setCounters([]));
   }, [dispatch]);
 
   const handleDelete = async (id) => {
