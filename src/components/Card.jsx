@@ -5,40 +5,28 @@ import { setCart } from "../slices/cartSlice";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRetryCall } from "../hooks";
 import axios from "axios";
+import { notifyError, notifySuccess } from "../App";
 
 const Card = ({ dish, onEdit, onDelete }) => {
   const cartItems = useSelector((state) => state.cart.items);
-  const isInCart = cartItems.some((item) => item.dish && item.dish._id === dish._id);
+  const isInCart = cartItems.some(
+    (item) => item.dish && item.dish._id === dish._id
+  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, retryCall] = useRetryCall("post");
+  const user = useSelector((state) => state.auth.currentUser);
+  const counterDetails = useSelector((state) => state.counter.currentCounter);
 
-  const handleAddToCart = (dishId) => {
-    const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-    const addDishToCart = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`,{},{
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        if (response.status === 201) {
-          dispatch(setCart(response.data));
-        } else {
-          throw new Error("Failed to add dish to cart");
-        }
-      } catch (error) {
-        console.log("Error:", error.message);
-      }
-    };
-    addDishToCart();
-  };
   // const handleAddToCart = (dishId) => {
   //   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   //   const addDishToCart = async () => {
   //     try {
-  //       const response = await retryCall(`${VITE_BACKEND_URL}/cart/${dishId}`)
+  //       const token = localStorage.getItem("token");
+  //       const response = await axios.post(`${VITE_BACKEND_URL}/cart/${dishId}`,{},{
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       })
   //       if (response.status === 201) {
   //         dispatch(setCart(response.data));
   //       } else {
@@ -50,6 +38,38 @@ const Card = ({ dish, onEdit, onDelete }) => {
   //   };
   //   addDishToCart();
   // };
+
+  const handleAddToCart = (dishId) => {
+    const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+    const isMerchant = counterDetails.merchants.some(
+      (merchant) => merchant._id.toString() === user._id.toString()
+    );
+
+    if (isMerchant) {
+      // toast.error("You can't add your own dish to cart.");
+      notifyError("You can't add your own dish to cart.");
+      return;
+    }
+
+    const addDishToCart = async () => {
+      try {
+        const response = await retryCall(`${VITE_BACKEND_URL}/cart/${dishId}`);
+        if (response.status === 201) {
+          dispatch(setCart(response.data));
+          notifySuccess("Dish added to cart successfully");
+        } else {
+          throw new Error("Failed to add dish to cart");
+        }
+      } catch (error) {
+        console.log(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+    addDishToCart();
+  };
 
   const handleGoToCart = () => {
     navigate("/cart");
@@ -86,21 +106,21 @@ const Card = ({ dish, onEdit, onDelete }) => {
           </button>
         ) : (
           dish.inStock && (
-          <button
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300"
-            onClick={() => handleAddToCart(dish._id)}
-            disabled={loading}
-          >
-            {loading ? (
-              <CircularProgress
-                size={24}
-                color="inherit"
-                className="text-black"
-              />
-            ) : (
-              "Add to Cart"
-            )}
-          </button>
+            <button
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300"
+              onClick={() => handleAddToCart(dish._id)}
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress
+                  size={24}
+                  color="inherit"
+                  className="text-black"
+                />
+              ) : (
+                "Add to Cart"
+              )}
+            </button>
           )
         )}
 
