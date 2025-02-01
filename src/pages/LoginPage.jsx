@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { MdFastfood } from "react-icons/md";
 import { setLoading } from "../slices/authSlice";
+import { notifyError, notifySuccess } from "../App";
 
 
 export default function LoginPage() {
@@ -45,11 +46,13 @@ export default function LoginPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setCurrentUser(userResponse.data));
+        notifySuccess("Logged in successfully");
         dispatch(setLoading(false));
 
         navigate("/counter");
       } catch (err) {
         console.error("Failed to fetch user details:", err);
+        notifyError("Failed to fetch user details. Please try again.");
         dispatch(setLoading(false));
       }
     } catch (err) {

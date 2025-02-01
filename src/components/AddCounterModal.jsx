@@ -194,7 +194,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { X, Plus, Store, Trash2 } from "lucide-react";
+import { X, Store, Trash2 } from "lucide-react";
+import { notifySuccess, notifyError } from "../App";
 
 const AddCounterModal = ({ onClose, onAddCounter }) => {
   const [name, setName] = useState("");
@@ -256,12 +257,14 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
 
       if (response.status === 201) {
         onAddCounter(response.data);
+        notifySuccess("Counter added successfully");
         onClose();
       } else {
         throw new Error("Failed to add counter");
       }
     } catch (error) {
       console.error(error.message);
+      notifyError("Failed to add counter");
     } finally {
       setLoading(false);
     }

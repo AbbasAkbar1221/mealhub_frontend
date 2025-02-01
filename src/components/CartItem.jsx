@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { setCart } from "../slices/cartSlice";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { notifyError, notifySuccess } from "../App";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
@@ -23,11 +24,13 @@ const CartItem = ({ item }) => {
 
       if (response.status === 200) {
         dispatch(setCart(response.data));
+        notifySuccess("Item removed from cart");
       } else {
         throw new Error("Failed to update cart");
       }
     } catch (error) {
       console.error("Error:", error.message);
+      notifyError("Failed to remove item from cart");
     } finally {
       setLoading(false);
     }
@@ -47,11 +50,13 @@ const CartItem = ({ item }) => {
 
       if (response.status === 200) {
         dispatch(setCart(response.data));
+        notifySuccess("Cart updated successfully");
       } else {
         throw new Error("Failed to update cart");
       }
     } catch (error) {
       console.error("Error:", error.message);
+      notifyError("Failed to update cart");
     } finally {
       setLoading(false);
     }
@@ -68,11 +73,13 @@ const CartItem = ({ item }) => {
 
       if (response.status === 200) {
         dispatch(setCart(response.data));
+        notifySuccess("Dish removed from cart");
       } else {
         throw new Error("Failed to remove product from cart");
       }
     } catch (error) {
       console.error("Error:", error.message);
+      notifyError("Failed to remove dish from cart");
     } finally {
       setLoading(false);
     }

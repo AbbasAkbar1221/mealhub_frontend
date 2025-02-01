@@ -203,6 +203,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCounterDetails, setCounters } from "../slices/counterSlice";
 import CircularProgress from "@mui/material/CircularProgress";
+import { notifyError, notifySuccess } from "../App";
 
 const CounterCard = () => {
   const [loading, setLoading] = useState(true);

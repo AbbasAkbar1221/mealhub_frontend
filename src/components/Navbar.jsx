@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { removeCurrentUser } from "../slices/authSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { ROLE } from "../constants";
 
 const Navbar = () => {
   const cartLength = useSelector((state) => state.cart.items.length);
@@ -104,6 +103,8 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
 // import React from "react";
 // import { NavLink } from "react-router-dom";
 // import { FaShoppingCart } from "react-icons/fa";

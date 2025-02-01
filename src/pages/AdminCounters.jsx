@@ -223,6 +223,7 @@ import { Store, PlusCircle, Edit2, Trash2, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import AddCounterModal from "../components/AddCounterModal";
 import EditCounterModal from "../components/EditCounterModal";
+import { notifyError, notifySuccess } from "../App";
 
 const AdminCounters = () => {
   const [loading, setLoading] = useState(true);
@@ -259,7 +260,6 @@ const AdminCounters = () => {
         );
         if (response.status === 200) {
           setMerchantsList(response.data);
-          console.log("list of merchants", response.data);
         }
       } catch (error) {
         console.error("Error fetching merchants:", error.message);
@@ -299,8 +299,10 @@ const AdminCounters = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setCounters(counters.filter((counter) => counter._id !== id)));
+      notifySuccess("Counter deleted successfully");
     } catch (err) {
       console.error(err);
+      notifyError("Failed to delete counter");
     }
   };
 

@@ -206,6 +206,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { X, Trash2, Plus, Store } from "lucide-react";
+import { notifyError, notifySuccess } from "../App";
 
 const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
   const counterId = counter._id;
@@ -275,12 +276,14 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
 
       if (response.status === 200) {
         onUpdateCounter(response.data);
+        notifySuccess("Counter updated successfully");
         onClose();
       } else {
         throw new Error("Failed to update counter");
       }
     } catch (error) {
       console.error("Error:", error.message);
+      notifyError("Failed to update counter");
     } finally {
       setLoading(false);
     }

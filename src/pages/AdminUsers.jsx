@@ -123,6 +123,7 @@ import axios from "axios";
 import { setUsers } from "../slices/authSlice";
 import { Trash2, UserCog, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import { notifyError, notifySuccess } from "../App";
 
 const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
@@ -160,8 +161,10 @@ const AdminUsers = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setUsers(users.filter((user) => user._id !== id)));
+      notifySuccess("User deleted successfully");
     } catch (error) {
       console.error(error.message);
+      notifyError("Failed to delete user");
     }
   };
 
@@ -180,8 +183,10 @@ const AdminUsers = () => {
         user._id === id ? { ...user, role: newRole } : user
       );
       dispatch(setUsers(updatedUsers));
+      notifySuccess("User role updated successfully");
     } catch (error) {
       console.error(error.message);
+      notifyError("Failed to update user role");
     }
   };
 

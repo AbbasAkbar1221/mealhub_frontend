@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdFastfood } from "react-icons/md";
+import { notifyError, notifySuccess } from "../App";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -33,9 +34,11 @@ export default function RegisterPage() {
 
       if (response.status === 200) {
         navigate("/login");
+        notifySuccess("Account created successfully. Please login to continue.");
       }
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed");
+      console.error(error.response?.data?.message || "Registration failed");
+      notifyError(error.response?.data?.message || "Registration failed");
     }
   };
 
