@@ -66,7 +66,6 @@ const HomePage = () => {
       }
     `}
       </style>
-      {/* Hero Section with Swiper Carousel */}
       <section className="relative h-screen">
         <Swiper
           modules={[Pagination, Navigation, Autoplay]}
@@ -79,7 +78,6 @@ const HomePage = () => {
         >
           {carouselImages.map((img, index) => (
             <SwiperSlide key={index} className="relative">
-              {/* Background Image and Overlay */}
               <div className="absolute inset-0">
                 <div
                   className="absolute inset-0 bg-cover bg-center"
@@ -88,7 +86,6 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-black/50"></div>
               </div>
 
-              {/* Content Layer */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white z-10">
                 <motion.h2
                   className="text-amber-500 font-serif italic text-4xl mb-4"
@@ -132,7 +129,6 @@ const HomePage = () => {
         </Swiper>
       </section>
 
-      {/* About Section */}
       <section className="py-24 bg-neutral-900">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -167,7 +163,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Popular Categories */}
       <section className="py-20 bg-black">
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center mb-12">
@@ -194,7 +189,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Special Offers */}
       <section className="py-20 bg-neutral-900">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-4 mb-12">
@@ -331,35 +325,5 @@ const SpecialCard = ({ image, title, discount, rating, cuisine }) => (
     </div>
   </div>
 );
-
-// Add these styles to your CSS/Tailwind config
-const style = {
-  ".animate-fadeIn": {
-    animation: "fadeIn 1s forwards",
-  },
-  ".animate-slideUp": {
-    animation: "slideUp 1s forwards",
-  },
-  ".animation-delay-200": {
-    animationDelay: "200ms",
-  },
-  ".animation-delay-400": {
-    animationDelay: "400ms",
-  },
-  "@keyframes fadeIn": {
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-  },
-  "@keyframes slideUp": {
-    from: {
-      opacity: 0,
-      transform: "translateY(20px)",
-    },
-    to: {
-      opacity: 1,
-      transform: "translateY(0)",
-    },
-  },
-};
 
 export default HomePage;

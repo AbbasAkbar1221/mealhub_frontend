@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCart } from "../slices/cartSlice";
 import axios from "axios";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Trash2, Minus, Plus } from "lucide-react";
 import { notifyError, notifySuccess } from "../App";
 
 const CartItem = ({ item }) => {
@@ -17,9 +17,9 @@ const CartItem = ({ item }) => {
 
     try {
       const response = await axios.patch(
-        `${VITE_BACKEND_URL}/cart/${dishId}`, payload ,{
-          headers: { Authorization: `Bearer ${token}` }
-        }
+        `${VITE_BACKEND_URL}/cart/${dishId}`, 
+        payload,
+        { headers: { Authorization: `Bearer ${token}` }}
       );
 
       if (response.status === 200) {
@@ -43,9 +43,9 @@ const CartItem = ({ item }) => {
 
     try {
       const response = await axios.patch(
-        `${VITE_BACKEND_URL}/cart/${dishId}`,  payload ,{
-          headers: { Authorization: `Bearer ${token}` }
-        }
+        `${VITE_BACKEND_URL}/cart/${dishId}`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` }}
       );
 
       if (response.status === 200) {
@@ -64,12 +64,12 @@ const CartItem = ({ item }) => {
 
   const handleRemoveProduct = async (dishId) => {
     setLoading(true);
-
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.delete(`${VITE_BACKEND_URL}/cart/${dishId}`,{
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.delete(
+        `${VITE_BACKEND_URL}/cart/${dishId}`,
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
 
       if (response.status === 200) {
         dispatch(setCart(response.data));
@@ -86,53 +86,63 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto flex justify-between items-center p-5 bg-white rounded-lg shadow-lg hover:shadow-2xl mb-6 transition-all duration-300 ease-in-out">
-      
-      <div className="flex items-center space-x-5 w-2/3">
-        <img
-          src={item.dish.image}
-          alt={item.dish.name}
-          className="w-20 h-20 object-cover rounded-lg shadow-md"
-        />
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800">{item.dish.name}</h3>
-          <p className="text-sm text-gray-500">₹{item.dish.price}</p>
+    <div className="max-w-4xl mx-auto mb-6">
+      <div className="bg-neutral-900 rounded-lg p-6 hover:bg-neutral-800 transition-all duration-300 ease-in-out">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-6 flex-1">
+            <div className="relative w-24 h-24 overflow-hidden rounded-lg">
+              <img
+                src={item.dish.image}
+                alt={item.dish.name}
+                className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+              />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-white">{item.dish.name}</h3>
+              <p className="text-amber-500 font-semibold">₹{item.dish.price}</p>
+            </div>
+          </div>
+
+          <div className="text-right mx-8">
+            <p className="text-lg font-bold text-white">
+              ₹{item.dish.price * item.quantity}
+            </p>
+            <p className="text-sm text-neutral-400">Total</p>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center bg-black rounded-lg p-1">
+              <button
+                onClick={() => handleRemoveItem(item.dish._id)}
+                className="p-2 text-neutral-400 hover:text-amber-500 disabled:opacity-50 transition-colors"
+                disabled={loading}
+              >
+                <Minus size={16} />
+              </button>
+              
+              <span className="w-12 text-center text-white font-semibold">
+                {item.quantity}
+              </span>
+              
+              <button
+                onClick={() => handleIncreaseQuantity(item.dish._id)}
+                className="p-2 text-neutral-400 hover:text-amber-500 disabled:opacity-50 transition-colors"
+                disabled={loading || !item.dish.inStock}
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+
+            <button
+              onClick={() => handleRemoveProduct(item.dish._id)}
+              className="p-2 text-neutral-400 hover:text-red-500 disabled:opacity-50 transition-colors"
+              disabled={loading}
+            >
+              <Trash2 size={20} />
+            </button>
+          </div>
         </div>
       </div>
-
-      
-      <p className="text-lg font-semibold text-gray-700 w-1/6">
-        ₹{item.dish.price * item.quantity}
-      </p>
-
-      
-      <div className="flex items-center space-x-3 w-1/6">
-        <button
-          onClick={() => handleRemoveItem(item.dish._id)}
-          className="bg-gray-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-gray-500 transition-all duration-300 ease-in-out"
-          disabled={loading}
-        >
-          -
-        </button>
-
-        <span className="text-xl font-semibold text-gray-800">{item.quantity}</span>
-
-        <button
-          onClick={() => handleIncreaseQuantity(item.dish._id)}
-          className="bg-gray-500 text-white px-3 py-1 rounded-lg shadow-md hover:bg-gray-600 transition-all duration-300 ease-in-out"
-          disabled={loading || !item.dish.inStock}
-        >
-          +
-        </button>
-      </div>
-      
-       <button
-        onClick={() => handleRemoveProduct(item.dish._id)}
-        className="bg-red-500 text-white p-2 rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 ease-in-out"
-        disabled={loading}
-      >
-        <DeleteIcon />
-      </button>
     </div>
   );
 };

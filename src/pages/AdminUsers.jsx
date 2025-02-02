@@ -1,127 +1,8 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useDispatch, useSelector } from "react-redux";
-// import { setUsers } from "../slices/authSlice";
-// import CircularProgress from "@mui/material/CircularProgress";
-
-// const AdminUsers = () => {
-//   const [loading, setLoading] = useState(true);
-//   const [roleOptions] = useState(["Customer", "Merchant", "Admin"]);
-//   const users = useSelector((state) => state.auth.users);
-//   const dispatch = useDispatch();
-
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-//       try {
-//         const token = localStorage.getItem("token");
-//         const response = await axios.get(`${VITE_BACKEND_URL}/user`, {
-//           headers: { Authorization: `Bearer ${token}` },
-//         });
-//         dispatch(setUsers(response.data));
-//         setLoading(false);
-//       } catch (err) {
-//         console.error(err);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchUsers();
-//     return () => dispatch(setUsers([]));
-//   }, []);
-
-//   const handleDelete = async (id) => {
-//     try {
-//       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-//       const token = localStorage.getItem("token");
-//       await axios.delete(`${VITE_BACKEND_URL}/user/${id}`, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       dispatch(setUsers(users.filter((user) => user._id !== id)));
-//     } catch (error) {
-//       console.error(error.message);
-//     }
-//   };
-
-//   const handleRoleChange = async (id, newRole) => {
-//     try {
-//       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-//       const token = localStorage.getItem("token");
-//       await axios.patch(`${VITE_BACKEND_URL}/user/${id}`, { role: newRole }, {
-//         headers: { Authorization: `Bearer ${token}` },
-//       });
-//       const updatedUsers = users.map((user) =>
-//         user._id === id ? { ...user, role: newRole } : user
-//       );
-//       dispatch(setUsers(updatedUsers));
-//     } catch (error) {
-//       console.error(error.message);
-//     }
-//   };
-
-//   if (loading)
-//     return (
-//       <div className="text-center h-[100vh] p-6 flex justify-center items-center">
-//         <CircularProgress size={50} color="inherit" className="text-black" />
-//       </div>
-//     );
-  
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-3xl text-center font-semibold text-gray-900 mb-6">
-//         Users
-//       </h1>
-//       {users.length === 0 ? (
-//         <p className="text-center text-gray-500">No users found.</p>
-//       ) : (
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {users.map((user) => (
-//             <div
-//               key={user._id}
-//               className="user-card bg-white border border-gray-300 rounded-lg shadow-xl p-6 flex flex-col items-start space-y-4 hover:shadow-2xl transition-shadow duration-300"
-//             >
-//               <div className="user-details space-y-2">
-//                 <p className="user-name text-lg font-medium text-gray-800">{user.name}</p>
-//                 <p className="user-email text-sm text-gray-600">{user.email}</p>
-//               </div>
-//               <div className="role-actions w-full flex flex-col items-start space-y-4">
-//                 <select
-//                   className="role-select w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-//                   value={user.role}
-//                   onChange={(e) => handleRoleChange(user._id, e.target.value)}
-//                 >
-//                   {roleOptions.map((role) => (
-//                     <option key={role} value={role}>
-//                       {role}
-//                     </option>
-//                   ))}
-//                 </select>
-//                 <div className="flex w-full justify-between">
-//                   <button
-//                     onClick={() => handleDelete(user._id)}
-//                     className="text-red-500 hover:text-red-700 transition"
-//                   >
-//                     <span className="material-icons-outlined">delete</span>
-//                   </button>
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default AdminUsers;
-
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setUsers } from "../slices/authSlice";
-import { Trash2, UserCog, Users } from "lucide-react";
+import { Trash2, UserCog, Users, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { notifyError, notifySuccess } from "../App";
 
@@ -129,6 +10,9 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [roleOptions] = useState(["Customer", "Merchant", "Admin"]);
   const [selectedRole, setSelectedRole] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const users = useSelector((state) => state.auth.users);
   const dispatch = useDispatch();
 
@@ -138,10 +22,11 @@ const AdminUsers = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(`${VITE_BACKEND_URL}/user`, {
-          params: { role: selectedRole },
+          params: { role: selectedRole , search: searchQuery, page, limit: 6 },
           headers: { Authorization: `Bearer ${token}` },
         });
-        dispatch(setUsers(response.data));
+        dispatch(setUsers(response.data.users));
+        setTotalPages(response.data.totalPages);
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -151,7 +36,7 @@ const AdminUsers = () => {
 
     fetchUsers();
     return () => dispatch(setUsers([]));
-  }, [selectedRole]);
+  }, [selectedRole, searchQuery, page]);
 
   const handleDelete = async (id) => {
     try {
@@ -190,6 +75,13 @@ const AdminUsers = () => {
     }
   };
 
+  const handlePagination = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
+
+
   if (loading)
     return (
       <div className="min-h-screen bg-neutral-900 flex justify-center items-center">
@@ -214,7 +106,17 @@ const AdminUsers = () => {
           </h2>
         </motion.div>
 
-        <div className="mb-6">
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
+        <div className="relative w-full md:w-1/2">
+            <Search className="absolute left-3 top-3 text-gray-400" />
+            <input
+              type="text"
+              className="w-full pl-10 pr-3 py-2 bg-neutral-800 text-white border border-neutral-700 rounded-sm focus:outline-none focus:border-amber-500 transition-colors"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <select
           className="bg-neutral-800 text-white border border-neutral-700 rounded-sm px-3 py-2 focus:outline-none focus:border-amber-500 transition-colors"
           value={selectedRole}
@@ -276,6 +178,25 @@ const AdminUsers = () => {
             ))}
           </div>
         )}
+
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => handlePagination(page - 1)}
+            disabled={page === 1}
+            className="px-4 py-2 bg-neutral-800 text-white rounded-l-sm hover:bg-neutral-700 transition-colors"
+          >
+            Prev
+          </button>
+          <span className="px-4 py-2 text-white">{`Page ${page} of ${totalPages}`}</span>
+          <button
+            onClick={() => handlePagination(page + 1)}
+            disabled={page === totalPages}
+            className="px-4 py-2 bg-neutral-800 text-white rounded-r-sm hover:bg-neutral-700 transition-colors"
+          >
+            Next
+          </button>
+        </div>
+
       </div>
     </div>
   );
