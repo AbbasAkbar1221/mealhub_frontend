@@ -24,21 +24,15 @@ const HomePage = () => {
   const navigate = useNavigate();
   const carouselImages = [carousal1, carousal2, carousal3];
   const user = useSelector((state) => state.auth.currentUser);
-  const pizzaImg =
-    "https://images.pexels.com/photos/13814644/pexels-photo-13814644.jpeg?auto=compress&cs=tinysrgb&w=600"
-  const burgerImg ="https://images.pexels.com/photos/3220617/pexels-photo-3220617.jpeg?auto=compress&cs=tinysrgb&w=600"
-  const sushiImg =
-    "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg?auto=compress&cs=tinysrgb&w=600";
-  const indianImg =
-    "https://images.pexels.com/photos/941869/pexels-photo-941869.jpeg?auto=compress&cs=tinysrgb&w=600";
-  const mexicanImg =
-    "https://images.pexels.com/photos/2092897/pexels-photo-2092897.jpeg?auto=compress&cs=tinysrgb&w=600";
-  const italianImg =
-    "https://images.pexels.com/photos/1487511/pexels-photo-1487511.jpeg?auto=compress&cs=tinysrgb&w=600";
-  const chineseImg =
-    "https://images.pexels.com/photos/1907228/pexels-photo-1907228.jpeg?auto=compress&cs=tinysrgb&w=600";
-  const dessertImg =
-    "https://images.pexels.com/photos/30380524/pexels-photo-30380524/free-photo-of-decadent-chocolate-strawberry-croissant-delight.jpeg?auto=compress&cs=tinysrgb&w=600";
+  const pizzaImg = './pizzaImg.jpeg'
+  const burgerImg = './burgerImg.jpeg'
+  const sushiImg = './sushiImg.jpeg'
+  const indianImg = './indianImg.jpeg'
+  const mexicanImg = './mexicanImg.jpeg'
+  const italianImg = './italianImg.jpeg'
+  const chineseImg = './chineseImg.webp'
+  const dessertImg = './dessertImg.jpeg'
+
 
   const categories = [
     { title: "Pizza", image: pizzaImg },
@@ -169,9 +163,6 @@ const HomePage = () => {
             <h2 className="text-3xl font-bold text-white">
               Popular Categories
             </h2>
-            {/* <button className="flex items-center gap-2 text-amber-500 hover:text-amber-400 transition">
-              View All <ArrowRight size={20} />
-            </button> */}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -198,21 +189,21 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             <SpecialCard
-              image="https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg?auto=compress&cs=tinysrgb&w=600"
+              image= './special1.jpeg'
               title="Signature Pizza"
               discount="40% OFF"
               rating="4.8"
               cuisine="Italian"
             />
             <SpecialCard
-              image="https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&cs=tinysrgb&w=600"
+              image= './special2.jpeg'
               title="Deluxe Burger"
               discount="30% OFF"
               rating="4.6"
               cuisine="American"
             />
             <SpecialCard
-              image="https://images.pexels.com/photos/12706239/pexels-photo-12706239.jpeg?auto=compress&cs=tinysrgb&w=600"
+              image= './special3.jpeg'
               title="Premium Sushi"
               discount="25% OFF"
               rating="4.9"
