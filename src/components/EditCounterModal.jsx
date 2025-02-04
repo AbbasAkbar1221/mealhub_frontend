@@ -8,6 +8,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
   const counterId = counter._id;
   const [name, setName] = useState(counter.name);
   const [description, setDescription] = useState(counter.description);
+  const [image, setImage] = useState(counter.image);
   const [merchantsList, setMerchantsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedMerchants, setSelectedMerchants] = useState(
@@ -57,6 +58,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
       const updatedCounter = {
         name,
         description,
+        image,
         merchants: selectedMerchants,
       };
 
@@ -127,6 +129,18 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="w-full bg-black text-white px-4 py-3 rounded-sm border border-neutral-800 focus:outline-none focus:border-amber-500 transition-colors"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-neutral-300">
+                Image
+              </label>
+              <input
+                type="text"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
                 className="w-full bg-black text-white px-4 py-3 rounded-sm border border-neutral-800 focus:outline-none focus:border-amber-500 transition-colors"
                 required
               />

@@ -69,8 +69,8 @@ const CounterCard = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/90 z-10"></div>
 
               <img 
-                src="https://images.pexels.com/photos/6070968/pexels-photo-6070968.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"               
-                alt="Counter background"
+                src={counter.image}
+                alt={counter.name}
                 className="w-full h-72 object-cover object-center group-hover:scale-110 transition-transform duration-700"
               />
               
