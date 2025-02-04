@@ -7,7 +7,7 @@ import { notifySuccess, notifyError } from "../App";
 const AddCounterModal = ({ onClose, onAddCounter }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("https://images.pexels.com/photos/1855214/pexels-photo-1855214.jpeg?auto=compress&cs=tinysrgb&w=600");
   const [merchantsList, setMerchantsList] = useState([]);
   const [selectedMerchants, setSelectedMerchants] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,6 +58,11 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
         image,
         merchants: selectedMerchants,
       };
+
+      if (newCounter.merchants.length === 0) {
+        notifyError("A counter must have at least one merchant.");
+        return;
+      }
 
       const token = localStorage.getItem("token");
       const response = await axios.post(`${VITE_BACKEND_URL}/counter`, newCounter, {

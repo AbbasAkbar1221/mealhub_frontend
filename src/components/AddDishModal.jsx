@@ -9,7 +9,7 @@ import { notifyError, notifySuccess } from "../App";
 const AddDishModal = ({ counterId, onClose }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("https://images.pexels.com/photos/257816/pexels-photo-257816.jpeg?auto=compress&cs=tinysrgb&w=600");
   const [rating, setRating] = useState(0);
   const [category, setCategory] = useState("");
   const [inStock, setInStock] = useState(true);
@@ -138,6 +138,28 @@ const AddDishModal = ({ counterId, onClose }) => {
                   className="w-5 h-5 accent-amber-500"
                 />
                 Non-Veg
+              </label>
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Beverage"
+                  checked={category === "Beverage"}
+                  onChange={() => setCategory("Beverage")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Beverage
+              </label>
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Shake"
+                  checked={category === "Shake"}
+                  onChange={() => setCategory("Shake")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Shake
               </label>
             </div>
 
