@@ -40,7 +40,9 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
   }, []);
 
   const handleMerchantAdd = (merchantId) => {
-    const merchant = merchantsList.find((m) => String(m._id) === String(merchantId));
+    const merchant = merchantsList.find(
+      (m) => String(m._id) === String(merchantId)
+    );
     if (merchant && !selectedMerchants.some((m) => m._id === merchantId)) {
       setSelectedMerchants([...selectedMerchants, merchant]);
     }
@@ -62,6 +64,10 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
         merchants: selectedMerchants,
       };
 
+      if (updatedCounter.merchants.length === 0) {
+        notifyError("A counter must have at least one merchant.");
+        return;
+      }
       const token = localStorage.getItem("token");
       const response = await axios.patch(
         `${VITE_BACKEND_URL}/counter/${counterId}`,
@@ -185,7 +191,9 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-neutral-500 text-sm">No merchants selected</p>
+                  <p className="text-neutral-500 text-sm">
+                    No merchants selected
+                  </p>
                 )}
               </div>
             </div>

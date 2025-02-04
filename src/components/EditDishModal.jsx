@@ -143,6 +143,28 @@ const EditDishModal = ({
                 />
                 Non-Veg
               </label>
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Beverage"
+                  checked={category === "Beverage"}
+                  onChange={() => setCategory("Beverage")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Beverage
+              </label>
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Shake"
+                  checked={category === "Shake"}
+                  onChange={() => setCategory("Shake")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Shake
+              </label>
             </div>
 
             <div className="space-y-2">

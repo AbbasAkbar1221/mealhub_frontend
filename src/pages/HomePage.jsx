@@ -30,7 +30,7 @@ const HomePage = () => {
   const indianImg = "./indianImg.jpeg";
   const mexicanImg = "./mexicanImg.jpeg";
   const italianImg = "./italianImg.jpeg";
-  const chineseImg = "./chineseImg.webp";
+  const chineseImg = "./chineseImg.jpeg";
   const dessertImg = "./dessertImg.jpeg";
 
   const categories = [
