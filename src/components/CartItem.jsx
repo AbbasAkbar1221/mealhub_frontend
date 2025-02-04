@@ -5,10 +5,10 @@ import axios from "axios";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { notifyError, notifySuccess } from "../App";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item , setLoading, loading}) => {
   const dispatch = useDispatch();
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const handleRemoveItem = async (dishId) => {
     const payload = { changeQuantity: -1 };

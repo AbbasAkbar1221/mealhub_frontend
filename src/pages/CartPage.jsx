@@ -11,6 +11,14 @@ const CartPage = () => {
   const totalAmount = useSelector(setTotalAmount);
   const [loading, setLoading] = useState(false);
 
+  if (loading)
+    return (
+      <div className="min-h-screen bg-neutral-900 flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+    
+
   return (
     <div className="min-h-screen bg-neutral-900">
       <div className="container mx-auto px-6 py-12">
@@ -52,7 +60,7 @@ const CartPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <CartItem item={item} />
+                    <CartItem item={item}  setLoading={setLoading} loading={loading} />
                   </motion.div>
                 )
               )}
