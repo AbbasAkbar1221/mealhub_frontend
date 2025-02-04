@@ -6,7 +6,7 @@ import { setCart } from "../slices/cartSlice";
 import { useRetryCall } from "../hooks";
 import { notifyError, notifySuccess } from "../App";
 
-const Card = ({ dish, onEdit, onDelete, isMerchant}) => {
+const Card = ({ dish, onEdit, onDelete, isMerchant, setLoading}) => {
   const cartItems = useSelector((state) => state.cart.items);
   const isInCart = cartItems.some((item) => item.dish && item.dish._id === dish._id);
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Card = ({ dish, onEdit, onDelete, isMerchant}) => {
     }
 
     const addDishToCart = async () => {
+      setLoading(true);
       try {
         const response = await retryCall(`${VITE_BACKEND_URL}/cart/${dishId}`);
         if (response.status === 201) {
@@ -37,6 +38,9 @@ const Card = ({ dish, onEdit, onDelete, isMerchant}) => {
           error.response ? error.response.data : error.message
         );
         notifyError("Failed to add dish to cart");
+      }
+      finally{
+        setLoading(false);
       }
     };
     addDishToCart();
