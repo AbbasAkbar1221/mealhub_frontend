@@ -6,7 +6,12 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { notifyError, notifySuccess } from "../App";
 
-const EditDishModal = ({ dish, onClose,loadingModalBg,setLoadingModalBg }) => {
+const EditDishModal = ({
+  dish,
+  onClose,
+  loadingModalBg,
+  setLoadingModalBg,
+}) => {
   const [name, setName] = useState(dish.name);
   const [price, setPrice] = useState(dish.price);
   const [image, setImage] = useState(dish.image);
@@ -49,7 +54,7 @@ const EditDishModal = ({ dish, onClose,loadingModalBg,setLoadingModalBg }) => {
       notifyError("Failed to update dish");
     } finally {
       setLoading(false);
-      setLoadingModalBg()
+      setLoadingModalBg();
     }
   };
 
@@ -104,24 +109,42 @@ const EditDishModal = ({ dish, onClose,loadingModalBg,setLoadingModalBg }) => {
               <input
                 type="number"
                 value={rating}
-                onChange={(e) => setRating(e.target.value)}
+                step="0.1"
+                onChange={(e) =>
+                  setRating(
+                    e.target.value === "" ? "" : parseFloat(e.target.value)
+                  )
+                }
                 className="w-full bg-black text-white px-4 py-3 rounded-sm border border-neutral-800 focus:outline-none focus:border-amber-500 transition-colors"
                 required
               />
             </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-neutral-300">
-                Category
+            <div className="flex items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Veg"
+                  checked={category === "Veg"}
+                  onChange={() => setCategory("Veg")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Veg
               </label>
-              <input
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-black text-white px-4 py-3 rounded-sm border border-neutral-800 focus:outline-none focus:border-amber-500 transition-colors"
-                required
-              />
+
+              <label className="flex items-center gap-2 text-white">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Non-Veg"
+                  checked={category === "Non-Veg"}
+                  onChange={() => setCategory("Non-Veg")}
+                  className="w-5 h-5 accent-amber-500"
+                />
+                Non-Veg
+              </label>
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm font-medium text-neutral-300">
                 Image URL
