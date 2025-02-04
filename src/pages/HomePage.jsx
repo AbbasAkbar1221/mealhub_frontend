@@ -24,15 +24,14 @@ const HomePage = () => {
   const navigate = useNavigate();
   const carouselImages = [carousal1, carousal2, carousal3];
   const user = useSelector((state) => state.auth.currentUser);
-  const pizzaImg = './pizzaImg.jpeg'
-  const burgerImg = './burgerImg.jpeg'
-  const sushiImg = './sushiImg.jpeg'
-  const indianImg = './indianImg.jpeg'
-  const mexicanImg = './mexicanImg.jpeg'
-  const italianImg = './italianImg.jpeg'
-  const chineseImg = './chineseImg.webp'
-  const dessertImg = './dessertImg.jpeg'
-
+  const pizzaImg = "./pizzaImg.jpeg";
+  const burgerImg = "./burgerImg.jpeg";
+  const sushiImg = "./sushiImg.jpeg";
+  const indianImg = "./indianImg.jpeg";
+  const mexicanImg = "./mexicanImg.jpeg";
+  const italianImg = "./italianImg.jpeg";
+  const chineseImg = "./chineseImg.webp";
+  const dessertImg = "./dessertImg.jpeg";
 
   const categories = [
     { title: "Pizza", image: pizzaImg },
@@ -68,6 +67,7 @@ const HomePage = () => {
           pagination={{ clickable: true }}
           navigation
           autoplay={{ delay: 4000 }}
+          loop={true}
           className="w-full h-full"
         >
           {carouselImages.map((img, index) => (
@@ -107,20 +107,21 @@ const HomePage = () => {
                 >
                   THE BEST MULTI CUISINE EXPERIENCE
                 </motion.p>
-
-                <motion.button
-                  onClick={() => user? navigate("/counter"): navigate("/login")}
-                  className="bg-amber-600 hover:bg-amber-700 px-8 py-3 rounded-sm flex items-center gap-2 mx-auto transition-colors"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
-                  GET STARTED <ArrowRight size={20} />
-                </motion.button>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-20">
+          <motion.button
+            onClick={() => (user ? navigate("/counter") : navigate("/login"))}
+            className="text-white bg-amber-600 hover:bg-amber-700 px-8 py-3 rounded-sm flex items-center gap-2 mx-auto transition-colors"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            GET STARTED <ArrowRight size={20} />
+          </motion.button>
+        </div>
       </section>
 
       <section className="py-24 bg-neutral-900">
@@ -165,18 +166,17 @@ const HomePage = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
             {categories.map((category) => (
-              <NavLink to={user? "/counter": "/login"}>
-              <CategoryCard
+              <NavLink
                 key={category.title}
-                title={category.title}
-                image={category.image}
-              />
+                to={user ? "/counter" : "/login"}
+                className="block transform hover:-translate-y-1 transition-transform duration-300"
+              >
+                <CategoryCard title={category.title} image={category.image} />
               </NavLink>
             ))}
           </div>
-          
         </div>
       </section>
 
@@ -189,21 +189,21 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             <SpecialCard
-              image= './special1.jpeg'
+              image="./special1.jpeg"
               title="Signature Pizza"
               discount="40% OFF"
               rating="4.8"
               cuisine="Italian"
             />
             <SpecialCard
-              image= './special2.jpeg'
+              image="./special2.jpeg"
               title="Deluxe Burger"
               discount="30% OFF"
               rating="4.6"
               cuisine="American"
             />
             <SpecialCard
-              image= './special3.jpeg'
+              image="./special3.jpeg"
               title="Premium Sushi"
               discount="25% OFF"
               rating="4.9"
@@ -224,14 +224,16 @@ const HomePage = () => {
             <h3 className="text-xl font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <NavLink to="/"
+                <NavLink
+                  to="/"
                   className="text-gray-400 hover:text-white transition"
                 >
                   Home
                 </NavLink>
               </li>
               <li>
-                <NavLink to=""
+                <NavLink
+                  to=""
                   className="text-gray-400 hover:text-white transition"
                 >
                   About
@@ -284,16 +286,22 @@ const FeatureCard = ({ icon, title, description }) => (
 );
 
 const CategoryCard = ({ title, image }) => (
-  <div className="group cursor-pointer">
-    <div className="bg-neutral-800 rounded-sm p-6 aspect-square flex flex-col items-center justify-center gap-4 group-hover:bg-neutral-700 transition">
-      <img
-        src={image}
-        alt={title}
-        className="w-32 h-32 rounded-full object-cover group-hover:scale-110 transition"
-      />
-      <h3 className="text-lg font-semibold text-white group-hover:text-amber-500 transition">
-        {title}
-      </h3>
+  <div className="relative group overflow-hidden rounded-lg">
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60 z-10" />
+
+    <img
+      src={image}
+      alt={title}
+      className="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-500"
+    />
+
+    <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+
+      <div className="flex items-center text-white/80 text-sm transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+        <span className="mr-2">Explore</span>
+        <ArrowRight className="w-4 h-4" />
+      </div>
     </div>
   </div>
 );
