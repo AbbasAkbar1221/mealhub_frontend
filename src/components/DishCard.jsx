@@ -209,6 +209,7 @@ const DishCard = () => {
                   onEdit={handleEditDish}
                   onDelete={handleDeleteDish}
                   isMerchant={isMerchant}
+                  setLoading={setLoading}
                 />
               </motion.div>
             ))

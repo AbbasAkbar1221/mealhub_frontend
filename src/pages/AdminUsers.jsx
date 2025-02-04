@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setUsers } from "../slices/authSlice";
-import { Trash2, UserCog, Users, Search } from "lucide-react";
+import { Trash2, UserCog, Users, Search, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { notifyError, notifySuccess } from "../App";
 
@@ -11,18 +11,22 @@ const AdminUsers = () => {
   const [roleOptions] = useState(["Customer", "Merchant", "Admin"]);
   const [selectedRole, setSelectedRole] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterLoading, setFilterLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loadingRoles, setLoadingRoles] = useState({});
+  const [changingRole, setChangingRole] = useState(null);
   const users = useSelector((state) => state.auth.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUsers = async () => {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+      setFilterLoading(true);
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(`${VITE_BACKEND_URL}/user`, {
-          params: { role: selectedRole , search: searchQuery, page, limit: 6 },
+          params: { role: selectedRole, search: searchQuery, page, limit: 6 },
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setUsers(response.data.users));
@@ -31,6 +35,8 @@ const AdminUsers = () => {
       } catch (err) {
         console.error(err);
         setLoading(false);
+      } finally {
+        setFilterLoading(false);
       }
     };
 
@@ -54,6 +60,8 @@ const AdminUsers = () => {
   };
 
   const handleRoleChange = async (id, newRole) => {
+    setChangingRole(id);
+    setLoadingRoles((prev) => ({ ...prev, [id]: true }));
     try {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
       const token = localStorage.getItem("token");
@@ -72,15 +80,22 @@ const AdminUsers = () => {
     } catch (error) {
       console.error(error.message);
       notifyError("Failed to update user role");
+    } finally {
+      setLoadingRoles((prev) => ({ ...prev, [id]: false }));
+      setChangingRole(null);
     }
   };
 
+  const handleRoles = (newRole) => {
+    setFilterLoading(true);
+    setSelectedRole(newRole);
+    setPage(1); 
+  };
   const handlePagination = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
     }
   };
-
 
   if (loading)
     return (
@@ -90,7 +105,12 @@ const AdminUsers = () => {
     );
 
   return (
-    <div className="min-h-screen bg-neutral-900 py-12 px-6">
+    <div className="min-h-screen bg-neutral-900 py-12 px-6 relative">
+      {filterLoading && (
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-md flex justify-center items-center z-50">
+          <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -107,7 +127,7 @@ const AdminUsers = () => {
         </motion.div>
 
         <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
-        <div className="relative w-full md:w-1/2">
+          <div className="relative w-full md:w-1/2">
             <Search className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
@@ -118,11 +138,13 @@ const AdminUsers = () => {
             />
           </div>
           <select
-          className="bg-neutral-800 text-white border border-neutral-700 rounded-sm px-3 py-2 focus:outline-none focus:border-amber-500 transition-colors"
-          value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
+            className="bg-neutral-800 text-white border border-neutral-700 rounded-sm px-3 py-2 focus:outline-none focus:border-amber-500 transition-colors"
+            value={selectedRole}
+            onChange={(e) => handleRoles(e.target.value)}
           >
-            <option value="" className="text-center">All</option>
+            <option value="" className="text-center">
+              All
+            </option>
             {roleOptions.map((role) => (
               <option className="text-center" key={role} value={role}>
                 {role}
@@ -153,17 +175,25 @@ const AdminUsers = () => {
 
                   <div className="flex items-center gap-3">
                     <UserCog className="w-5 h-5 text-amber-500" />
-                    <select
-                      className="flex-1 bg-neutral-800 text-white border border-neutral-700 rounded-sm px-3 py-2 focus:outline-none focus:border-amber-500 transition-colors"
-                      value={user.role}
-                      onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                    >
-                      {roleOptions.map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative flex-1">
+                      <select
+                        className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-sm px-3 py-2 focus:outline-none focus:border-amber-500 transition-colors"
+                        value={user.role}
+                        disabled={loadingRoles[user._id] || (changingRole && changingRole !== user._id)}
+                        onChange={(e) =>
+                          handleRoleChange(user._id, e.target.value)
+                        }
+                      >
+                        {roleOptions.map((role) => (
+                          <option key={role} value={role}>
+                            {role}
+                          </option>
+                        ))}
+                      </select>
+                      {loadingRoles[user._id] && (
+                        <Loader2 className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-amber-500" />
+                      )}
+                    </div>
                   </div>
 
                   <button
@@ -196,7 +226,6 @@ const AdminUsers = () => {
             Next
           </button>
         </div>
-
       </div>
     </div>
   );
