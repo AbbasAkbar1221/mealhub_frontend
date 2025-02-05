@@ -5,12 +5,20 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { setLoading } from "../slices/authSlice";
 import { notifyError, notifySuccess } from "../App";
-import { UtensilsCrossed, ChevronRight, Mail, Lock } from "lucide-react";
+import {
+  UtensilsCrossed,
+  ChevronRight,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,9 +34,9 @@ export default function LoginPage() {
 
     try {
       const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-      const response = await axios.post(`${VITE_BACKEND_URL}/auth/login`, { 
-        email, 
-        password 
+      const response = await axios.post(`${VITE_BACKEND_URL}/auth/login`, {
+        email,
+        password,
       });
 
       const { token, refresh_token } = response?.data || {};
@@ -42,9 +50,12 @@ export default function LoginPage() {
 
       dispatch(setLoading(true));
       try {
-        const userResponse = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const userResponse = await axios.get(
+          `${VITE_BACKEND_URL}/cart/users/me`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         dispatch(setCurrentUser(userResponse.data));
         notifySuccess("Logged in successfully");
         dispatch(setLoading(false));
@@ -55,7 +66,9 @@ export default function LoginPage() {
         dispatch(setLoading(false));
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Something went wrong. Please try again.";
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
       setError(errorMessage);
       console.error("Login failed:", errorMessage);
     }
@@ -70,16 +83,16 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      {/* Logo Section */}
       <div className="mb-8 text-center">
         <div className="flex items-center justify-center gap-3 mb-2">
           <UtensilsCrossed className="text-amber-500 w-8 h-8" />
           <h1 className="text-4xl font-bold text-white">Foodie Heaven</h1>
         </div>
-        <p className="text-amber-500 font-serif italic">Your Culinary Journey Begins Here</p>
+        <p className="text-amber-500 font-serif italic">
+          Your Culinary Journey Begins Here
+        </p>
       </div>
 
-      {/* Login Form Card */}
       <div className="w-full max-w-md">
         <div className="bg-neutral-900 rounded-lg p-8 shadow-2xl">
           <h2 className="text-2xl font-bold text-white text-center mb-6">
@@ -111,13 +124,20 @@ export default function LoginPage() {
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
                   onChange={handleInputChange}
                   className="w-full bg-black border border-neutral-800 text-white px-10 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
                   required
                 />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5 focus:outline-none"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
               </div>
             </div>
 
@@ -139,7 +159,10 @@ export default function LoginPage() {
           <div className="mt-6 pt-6 border-t border-neutral-800">
             <p className="text-center text-sm text-neutral-500">
               Don't have an account?{" "}
-              <Link to="/register" className="text-amber-500 hover:text-amber-400 transition-colors">
+              <Link
+                to="/register"
+                className="text-amber-500 hover:text-amber-400 transition-colors"
+              >
                 Create one now
               </Link>
             </p>
@@ -147,11 +170,17 @@ export default function LoginPage() {
 
           <p className="text-xs text-neutral-500 mt-6 text-center">
             By continuing, you agree to Foodie Heaven's{" "}
-            <a href="#" className="text-amber-500 hover:text-amber-400 transition-colors">
+            <a
+              href="#"
+              className="text-amber-500 hover:text-amber-400 transition-colors"
+            >
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="text-amber-500 hover:text-amber-400 transition-colors">
+            <a
+              href="#"
+              className="text-amber-500 hover:text-amber-400 transition-colors"
+            >
               Privacy Policy
             </a>
           </p>
