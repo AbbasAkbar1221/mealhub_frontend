@@ -64,13 +64,12 @@ const App = () => {
     return () => dispatch(setCart([]));
   }, [user]);
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="text-center h-[100vh] p-6 flex justify-center items-center">
-        <CircularProgress size={50} color="inherit" className="text-black" />
+      <div className="min-h-screen bg-neutral-900 flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
-  }
 
   return (
     <Router>
