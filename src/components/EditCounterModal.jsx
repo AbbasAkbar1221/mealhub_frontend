@@ -3,14 +3,17 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { X, Trash2, Plus, Store } from "lucide-react";
 import { notifyError, notifySuccess } from "../App";
+import { useSelector, useDispatch } from "react-redux";
+import { setMerchantsList } from "../slices/counterSlice";
 
 const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
   const counterId = counter._id;
   const [name, setName] = useState(counter.name);
   const [description, setDescription] = useState(counter.description);
   const [image, setImage] = useState(counter.image);
-  const [merchantsList, setMerchantsList] = useState([]);
+  const merchantsList = useSelector((state) => state.counter.merchants);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const [selectedMerchants, setSelectedMerchants] = useState(
     counter.merchants || []
   );
@@ -28,7 +31,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
           }
         );
         if (response.status === 200) {
-          setMerchantsList(response.data);
+          dispatch(setMerchantsList(response.data));
         }
       } catch (error) {
         console.error("Error fetching merchants:", error.message);
@@ -36,7 +39,7 @@ const EditCounterModal = ({ counter, onClose, onUpdateCounter }) => {
     };
 
     fetchMerchants();
-    return () => setMerchantsList([]);
+    return () => dispatch(setMerchantsList([]));
   }, []);
 
   const handleMerchantAdd = (merchantId) => {

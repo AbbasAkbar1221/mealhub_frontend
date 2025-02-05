@@ -6,6 +6,7 @@ const counterSlice = createSlice({
     dishes: [],
     counters: [],
     currentCounter: null,
+    merchants: [],
   },
   reducers: {
     setDishesOfCounter: (state, action) => {
@@ -18,9 +19,12 @@ const counterSlice = createSlice({
     setCounters: (state, action) => {
       state.counters = action.payload;
     },
+    setMerchantsList: (state, action) => {
+      state.merchants = action.payload;
+    },
   },
 });
 
-export const { setDishesOfCounter, setCounterDetails, setCounters } =
+export const { setDishesOfCounter, setCounterDetails, setCounters, setMerchantsList } =
   counterSlice.actions;
 export default counterSlice.reducer;

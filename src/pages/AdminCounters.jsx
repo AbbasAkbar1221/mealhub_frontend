@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setCounters } from "../slices/counterSlice";
+import { setCounters, setMerchantsList } from "../slices/counterSlice";
 import { Store, PlusCircle, Edit2, Trash2, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import AddCounterModal from "../components/AddCounterModal";
@@ -13,8 +13,8 @@ const AdminCounters = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCounter, setSelectedCounter] = useState(null);
   const [loadingModalBg, setLoadingModalBg] = useState(false);
-  const [merchantsList, setMerchantsList] = useState([]);
   const counters = useSelector((state) => state.counter.counters);
+  const merchantsList = useSelector((state) => state.counter.merchants);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const AdminCounters = () => {
           }
         );
         if (response.status === 200) {
-          setMerchantsList(response.data);
+          dispatch(setMerchantsList(response.data));
         }
       } catch (error) {
         console.error("Error fetching merchants:", error.message);
@@ -50,7 +50,7 @@ const AdminCounters = () => {
     };
 
     fetchMerchants();
-    return () => setMerchantsList([]);
+    return () => dispatch(setMerchantsList([]));
   }, []);
 
 
