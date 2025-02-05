@@ -9,7 +9,7 @@ import { notifyError, notifySuccess } from "../App";
 const AddDishModal = ({ counterId, onClose }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("https://images.pexels.com/photos/257816/pexels-photo-257816.jpeg?auto=compress&cs=tinysrgb&w=600");
+  const [image, setImage] = useState("");
   const [rating, setRating] = useState(0);
   const [category, setCategory] = useState("");
   const [inStock, setInStock] = useState(true);
@@ -23,13 +23,15 @@ const AddDishModal = ({ counterId, onClose }) => {
     e.preventDefault();
     setLoading(true);
 
+    const defaultImage = "https://images.pexels.com/photos/257816/pexels-photo-257816.jpeg?auto=compress&cs=tinysrgb&w=600";
+
     try {
       const token = localStorage.getItem("token");
       const newDish = {
         name,
         price,
         counter: counterId,
-        image,
+        image: image || defaultImage,
         inStock,
         rating,
         category,

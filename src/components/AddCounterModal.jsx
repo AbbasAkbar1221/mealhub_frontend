@@ -9,7 +9,7 @@ import { setMerchantsList } from "../slices/counterSlice";
 const AddCounterModal = ({ onClose, onAddCounter }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("https://images.pexels.com/photos/1855214/pexels-photo-1855214.jpeg?auto=compress&cs=tinysrgb&w=600");
+  const [image, setImage] = useState("");
   const [selectedMerchants, setSelectedMerchants] = useState([]);
   const [loading, setLoading] = useState(false);
   const merchantsList = useSelector((state) => state.counter.merchants);
@@ -54,11 +54,13 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
     e.preventDefault();
     setLoading(true);
 
+    const defaultImage = "https://images.pexels.com/photos/1855214/pexels-photo-1855214.jpeg?auto=compress&cs=tinysrgb&w=600";
+
     try {
       const newCounter = {
         name,
         description,
-        image,
+        image : image || defaultImage,
         merchants: selectedMerchants,
       };
 
@@ -143,7 +145,7 @@ const AddCounterModal = ({ onClose, onAddCounter }) => {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 className="w-full bg-black text-white px-4 py-3 rounded-sm border border-neutral-800 focus:outline-none focus:border-amber-500 transition-colors"
-                required
+                // required
               />
             </div>
 
