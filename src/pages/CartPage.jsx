@@ -5,6 +5,7 @@ import { setTotalAmount } from "../slices/cartSlice";
 import { CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const CartPage = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -44,9 +45,11 @@ const CartPage = () => {
             transition={{ delay: 0.2 }}
           >
             <p className="text-neutral-400 text-lg sm:text-xl">Your cart is empty</p>
+            <NavLink to="/counter">
             <button className="mt-6 px-6 sm:px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-md transition-colors">
               Continue Shopping
             </button>
+            </NavLink>
           </motion.div>
         ) : (
           <div className="bg-black rounded-lg p-4 sm:p-6">

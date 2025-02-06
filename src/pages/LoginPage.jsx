@@ -51,7 +51,7 @@ export default function LoginPage() {
       dispatch(setLoading(true));
       try {
         const userResponse = await axios.get(
-          `${VITE_BACKEND_URL}/cart/users/me`,
+          `${VITE_BACKEND_URL}/user/details`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
