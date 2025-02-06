@@ -49,7 +49,7 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center md:flex-row md:items-start gap-8">
             <div className="relative">
               <div className="w-32 h-32 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center text-4xl font-bold text-white shadow-lg">
-                {user?.name?.charAt(0).toUpperCase() || "G"}
+                {user?.name?.charAt(0).toUpperCase()}
               </div>
               <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-neutral-800 rounded-full flex items-center justify-center">
                 {getRoleIcon(user?.role)}
@@ -58,7 +58,7 @@ const ProfilePage = () => {
 
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-3xl font-bold text-white mb-2">
-                {user?.name || "Guest User"}
+                {user?.name}
               </h2>
               
               <p className="text-neutral-400 mb-4">
