@@ -31,7 +31,7 @@ const App = () => {
       dispatch(setLoading(true));
       try {
         const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-        const response = await axios.get(`${VITE_BACKEND_URL}/cart/users/me`, {
+        const response = await axios.get(`${VITE_BACKEND_URL}/user/details`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setCurrentUser(response.data));

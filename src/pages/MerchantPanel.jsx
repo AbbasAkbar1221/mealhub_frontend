@@ -10,15 +10,28 @@ const MerchantPanel = () => {
   const [loading, setLoading] = useState(true);
   const [showCounterModal, setShowCounterModal] = useState(false);
   const [selectedCounter, setSelectedCounter] = useState(null);
+  const [loadingModalBg, setLoadingModalBg] = useState(false);
   const counters = useSelector((state) => state.counter.counters);
   const dispatch = useDispatch();
+
+   useEffect(() => {
+      if (selectedCounter || showCounterModal) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+  
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+    }, [showCounterModal, selectedCounter]);
 
   useEffect(() => {
     const fetchCounters = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/cart/merchant/counter`,
+          `${import.meta.env.VITE_BACKEND_URL}/counter/merchant/counter`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -46,6 +59,7 @@ const MerchantPanel = () => {
     setSelectedCounter(counter);
     dispatch(setCounterDetails(counter));
     setShowCounterModal(true);
+    setLoadingModalBg(true)
   };
 
   if (loading) {
@@ -58,6 +72,9 @@ const MerchantPanel = () => {
 
   return (
     <div className="min-h-screen bg-neutral-900 py-12 px-6">
+       {loadingModalBg && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"></div>
+      )}
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -102,7 +119,9 @@ const MerchantPanel = () => {
       {showCounterModal && (
         <MerchantCounterModal
           counter={selectedCounter}
-          onClose={() => setShowCounterModal(false)}
+          onClose={() => {setShowCounterModal(false);
+            setLoadingModalBg(false)}
+          }
         />
       )}
     </div>

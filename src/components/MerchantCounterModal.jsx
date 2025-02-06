@@ -8,8 +8,6 @@ import { notifyError, notifySuccess } from "../App";
 const CounterModal = ({
   counter,
   onClose,
-  loadingModalBg,
-  setLoadingModalBg,
 }) => {
   const [counterName, setCounterName] = useState(counter ? counter.name : "");
   const [counterDes, setCounterDes] = useState(
@@ -48,7 +46,6 @@ const CounterModal = ({
       notifyError("Failed to save counter");
     } finally {
       setLoading(false);
-      setLoadingModalBg();
     }
   };
 
@@ -62,13 +59,6 @@ const CounterModal = ({
             style={{ color: "white" }}
           />
         </div>
-      )}
-
-      {loadingModalBg && (
-        <div
-          className="fixed inset-0 bg-black z-[100] transition-opacity duration-300"
-          style={{ opacity: 0.3 }}
-        ></div>
       )}
 
       <div className="fixed inset-0 flex justify-center items-center z-[1000] mt-10">
