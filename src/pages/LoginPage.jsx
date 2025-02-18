@@ -136,7 +136,7 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5 focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <Eye />: <EyeOff />}
+                  {showPassword ? <EyeOff /> : <Eye /> }
                 </button>
               </div>
             </div>
