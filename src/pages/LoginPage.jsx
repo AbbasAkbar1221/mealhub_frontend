@@ -74,12 +74,6 @@ export default function LoginPage() {
     }
   };
 
-  // useEffect(() => {
-  //   document.body.style.overflow = "hidden";
-  //   return () => {
-  //     document.body.style.overflow = "auto";
-  //   };
-  // }, []);
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
@@ -136,7 +130,7 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5 focus:outline-none"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff /> : <Eye /> }
+                  {showPassword ? <Eye /> : <EyeOff />  }
                 </button>
               </div>
             </div>

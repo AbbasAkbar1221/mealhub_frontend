@@ -75,7 +75,12 @@ const AdminUsers = () => {
       const updatedUsers = users.map((user) =>
         user._id === id ? { ...user, role: newRole } : user
       );
-      dispatch(setUsers(updatedUsers));
+
+      const filteredUsers = selectedRole
+        ? updatedUsers.filter((user) => user.role === selectedRole)
+        : updatedUsers;
+
+      dispatch(setUsers(filteredUsers));
       notifySuccess("User role updated successfully");
     } catch (error) {
       console.error(error.message);
@@ -213,7 +218,11 @@ const AdminUsers = () => {
           <button
             onClick={() => handlePagination(page - 1)}
             disabled={page === 1}
-            className="px-4 py-2 bg-neutral-800 text-white rounded-l-sm hover:bg-neutral-700 transition-colors"
+            className={`px-4 py-2 text-white rounded-l-sm transition-colors ${
+              page === 1
+                ? 'bg-neutral-600 cursor-not-allowed'
+                : 'bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
+            }`}
           >
             Prev
           </button>
@@ -221,7 +230,11 @@ const AdminUsers = () => {
           <button
             onClick={() => handlePagination(page + 1)}
             disabled={page === totalPages}
-            className="px-4 py-2 bg-neutral-800 text-white rounded-r-sm hover:bg-neutral-700 transition-colors"
+            className={`px-4 py-2 text-white rounded-r-sm transition-colors ${
+              page === totalPages
+                ? 'bg-neutral-600 cursor-not-allowed'
+                : 'bg-neutral-800 hover:bg-neutral-700 cursor-pointer'
+            }`}
           >
             Next
           </button>

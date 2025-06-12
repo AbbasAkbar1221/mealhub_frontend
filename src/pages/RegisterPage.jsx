@@ -36,12 +36,6 @@ export default function RegisterPage() {
     }
   };
 
-  // useEffect(() => {
-  //   document.body.style.overflow = "hidden";
-  //   return () => {
-  //     document.body.style.overflow = "auto";
-  //   };
-  // }, []);
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
